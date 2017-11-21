@@ -23,6 +23,10 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $data = [
+            'key' => session()->all()
+        ];
+        return response()->json($data);
         return view('home');
     }
 }
