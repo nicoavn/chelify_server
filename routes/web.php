@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    // $users = factory(App\User::class, 5)->create();
+    //$users = factory(App\User::class, 5)->create();
 
     return view('welcome');
 });

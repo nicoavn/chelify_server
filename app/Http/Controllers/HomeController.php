@@ -26,7 +26,7 @@ class HomeController extends Controller
         $data = [
             'key' => session()->all()
         ];
-        return response()->json($data);
+        // return response()->json($data);
         return view('home');
     }
 }
