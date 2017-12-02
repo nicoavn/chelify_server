@@ -7,7 +7,7 @@ use App\AccountType;
 use App\User;
 use Illuminate\Http\Request;
 
-class ApiController extends Controller
+class ApiAuthController extends Controller
 {
     /**
      * Create a new controller instance.
