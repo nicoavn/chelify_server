@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth:web');
     }
 
     /**
@@ -23,10 +24,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $data = [
-            'key' => session()->all()
-        ];
+//        $data = [
+//            'key' => session()->all()
+//        ];
         // return response()->json($data);
         return view('home');
+    }
+
+    protected function guard()
+    {
+        return Auth::guard('web');
     }
 }

@@ -16,7 +16,7 @@ class ApiController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('api');
+        $this->middleware('api', ['except' => ['register', 'login']]);
     }
 
     public function register(Request $request)
@@ -39,5 +39,12 @@ class ApiController extends Controller
             ->associate($account)
             ->save();
         return $user;
+    }
+
+    public function login(Request $request)
+    {
+        $email = $request->input('email');
+        $password = $request->input('password');
+
     }
 }
