@@ -17,7 +17,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('register', 'ApiAuthController@register')->name('register');
+Route::post('register', 'ApiAuthController@register');
+
+Route::group([
+
+    'middleware' => ['api', 'auth:api'],
+    'prefix' => 'transaction'
+
+], function ($router) {
+
+    Route::post('list', 'TransactionController@index')->name('transaction-list');
+
+});
 
 Route::group([
 
@@ -26,9 +37,9 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
+    Route::post('login', 'ApiAuthController@login');
+    Route::post('logout', 'ApiAuthController@logout');
+    Route::post('refresh', 'ApiAuthController@refresh');
+    Route::post('me', 'ApiAuthController@me');
 
 });
