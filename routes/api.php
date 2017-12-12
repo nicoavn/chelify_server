@@ -13,33 +13,25 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::post('register', 'ApiAuthController@register');
 
 Route::group([
-
     'middleware' => ['api', 'auth:api'],
     'prefix' => 'transaction'
-
 ], function ($router) {
-
     Route::post('list', 'TransactionController@index')->name('transaction-list');
-
 });
 
 Route::group([
-
     'middleware' => 'api',
     'prefix' => 'auth'
-
 ], function ($router) {
-
     Route::post('login', 'ApiAuthController@login');
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
     Route::post('me', 'ApiAuthController@me');
-
 });
