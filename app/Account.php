@@ -13,6 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Account extends Model
 {
+    public function transactions()
+    {
+        return $this->hasMany('App\Transactions');
+    }
+
     public function type()
     {
         return $this->belongsTo('App\AccountType', 'account_type_id');

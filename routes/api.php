@@ -20,10 +20,18 @@ use Illuminate\Http\Request;
 Route::post('register', 'ApiAuthController@register');
 
 Route::group([
-    'middleware' => ['api', 'auth:api'],
+    'middleware' => ['api'], //, 'auth:api'
     'prefix' => 'transaction'
 ], function ($router) {
-    Route::post('list', 'TransactionController@index')->name('transaction-list');
+    Route::get('/', 'TransactionController@index')->name('transaction-list');
+});
+
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'transaction-category'
+], function ($router) {
+    Route::get('/', 'TransactionCategoryController@index')->name('transaction-category-list');
+    Route::get('/{id}', 'TransactionCategoryController@show')->name('transaction-category-show');
 });
 
 Route::group([
@@ -34,4 +42,12 @@ Route::group([
     Route::post('logout', 'ApiAuthController@logout');
     Route::post('refresh', 'ApiAuthController@refresh');
     Route::post('me', 'ApiAuthController@me');
+});
+
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'image'
+], function ($router) {
+    Route::get('/{account_id}', 'ImageController@show')->name('image-show');
+    Route::post('/', 'ImageController@store')->name('image-store');
 });

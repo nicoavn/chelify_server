@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Transaction;
+use App\TransactionCategory;
 use Illuminate\Http\Request;
 
-class TransactionController extends Controller
+class TransactionCategoryController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -23,7 +23,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return response()->json(Transaction::all());
+        return response()->json(
+            TransactionCategory::all()
+        );
     }
 
     /**
@@ -55,7 +57,9 @@ class TransactionController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json(
+            TransactionCategory::find($id)
+        );
     }
 
     /**

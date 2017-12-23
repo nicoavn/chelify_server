@@ -11,10 +11,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Transaction extends Model
+class TransactionCategory extends Model
 {
-    public function category()
+    public function type()
     {
-        return $this->belongsTo('App\TransactionCategory', 'transaction_category_id');
+        return $this->belongsTo('App\TransactionCategoryType', 'transaction_category_type_id');
     }
 }
