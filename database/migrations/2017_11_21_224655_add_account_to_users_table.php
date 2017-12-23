@@ -15,6 +15,9 @@ class AddAccountToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('account_id')->unsigned()->after('remember_token');
+        });
+
+        Schema::table('users', function (Blueprint $table) {
             $table->foreign('account_id')->references('id')->on('accounts');
         });
     }

@@ -1,17 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: alvin
- * Date: 21/11/2017
- * Time: 6:55 PM
- */
 
 namespace App;
 
-
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Transaction extends Model
+class Card extends Model
 {
     use SoftDeletes;
 
@@ -22,8 +16,8 @@ class Transaction extends Model
      */
     protected $dates = ['deleted_at'];
 
-    public function category()
+    public function financialInstrument()
     {
-        return $this->belongsTo('App\TransactionCategory', 'transaction_category_id');
+        return $this->belongsTo('App\FinancialInstrument');
     }
 }
