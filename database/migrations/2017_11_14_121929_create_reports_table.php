@@ -18,8 +18,8 @@ class CreateReportsTable extends Migration
 
             $table->string('title');
             $table->string('report_type');
-            $table->timestamp('from');
-            $table->timestamp('to');
+            $table->timestamp('from_date')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->timestamp('to_date')->default(DB::raw('CURRENT_TIMESTAMP'));
 
             $table->integer('account_id')->unsigned();
             $table->foreign('account_id')->references('id')->on('accounts');
