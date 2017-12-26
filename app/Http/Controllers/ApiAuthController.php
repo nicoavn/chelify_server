@@ -5,11 +5,15 @@ namespace App\Http\Controllers;
 use App\Account;
 use App\AccountType;
 use App\User;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApiAuthController extends Controller
 {
+    use ResetsPasswords, SendsPasswordResetEmails;
+
     /**
      * Create a new ApiAuthController instance.
      *
@@ -17,7 +21,7 @@ class ApiAuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'resetPassword', 'forgotPassword']]);
     }
 
     public function register(Request $request)
@@ -58,6 +62,16 @@ class ApiAuthController extends Controller
         }
 
         return response()->json(['error' => 'Unauthorized'], 401);
+    }
+
+    public function resetPassword()
+    {
+
+    }
+
+    public function forgotPassword()
+    {
+
     }
 
     /**

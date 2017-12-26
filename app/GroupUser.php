@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Group extends Model
+class GroupUser extends Model
 {
     use SoftDeletes;
 
@@ -16,18 +16,13 @@ class Group extends Model
      */
     protected $dates = ['deleted_at'];
 
-    public function account()
+    public function group()
     {
-        return $this->belongsTo('App\Account');
+        return $this->belongsTo('App\Group');
     }
 
-    public function manager()
+    public function user()
     {
-        return $this->belongsTo('App\User', 'manager_id');
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany('App\User');
+        return $this->belongsTo('App\User');
     }
 }

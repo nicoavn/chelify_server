@@ -42,4 +42,9 @@ class Account extends Model
     {
         return $this->hasMany('App\FinancialInstrument', 'owner_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany('App\Image');
+    }
 }

@@ -21,6 +21,14 @@ Route::post('register', 'ApiAuthController@register');
 
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'group'
+], function ($router) {
+    Route::get('/', 'GroupController@index')->name('group-list');
+    Route::post('/add-member', 'GroupController@addMember')->name('group-add-member');
+});
+
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
     'prefix' => 'transaction'
 ], function ($router) {
     Route::get('/', 'TransactionController@index')->name('transaction-list');
