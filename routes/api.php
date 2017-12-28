@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-Route::post('register', 'ApiAuthController@register');
+Route::post('register', 'AuthController@register');
 
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
@@ -46,10 +46,12 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('login', 'ApiAuthController@login');
-    Route::post('logout', 'ApiAuthController@logout');
-    Route::post('refresh', 'ApiAuthController@refresh');
-    Route::post('me', 'ApiAuthController@me');
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('me', 'AuthController@me');
+
+    Route::post('password/email', 'AuthController@sendResetLinkEmail');
 });
 
 Route::group([

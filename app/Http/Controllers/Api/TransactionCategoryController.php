@@ -1,17 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Account;
-use App\AccountType;
-use App\Group;
-use App\GroupUser;
-use App\User;
-use DateTime;
+use App\TransactionCategory;
 use Illuminate\Http\Request;
-use Exception;
 
-class GroupController extends Controller
+class TransactionCategoryController extends Controller
 {
     /**
      * Create a new controller instance.
@@ -29,7 +23,9 @@ class GroupController extends Controller
      */
     public function index()
     {
-        return response()->json(Group::with(['manager', 'users', 'account.images'])->get());
+        return response()->json(
+            TransactionCategory::all()
+        );
     }
 
     /**
@@ -50,42 +46,7 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-
-        $account = Account::make();
-        $account->type()->associate(AccountType::find('2'));
-        $account->save();
-
-        $group = Group::make([
-            'title' => $data['title'],
-            'manager_id' => $data['manager_id'],
-        ]);
-
-        $group->account()
-            ->associate($account)
-            ->save();
-
-        return $group;
-    }
-
-    public function addMember(Request $request)
-    {
-        $response = ['ok' => 1];
-
-        $data = $request->all();
-
-        try {
-            $user = User::find($data['user_id'])->first();
-            $group = Group::find($data['group_id'])->first();
-            $dt = new DateTime;
-            $group->users()->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
-        } catch (Exception $e) {
-            $response['ok'] = 0;
-            $response['error'] = $e->getMessage();
-        }
-
-
-        return response()->json($response);
+        //
     }
 
     /**
@@ -96,7 +57,9 @@ class GroupController extends Controller
      */
     public function show($id)
     {
-        //
+        return response()->json(
+            TransactionCategory::find($id)
+        );
     }
 
     /**
