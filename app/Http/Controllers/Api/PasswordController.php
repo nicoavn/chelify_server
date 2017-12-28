@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -21,7 +22,8 @@ class PasswordController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth:api')->only(['resetAuthenticated']);
+        $this->middleware('guest')->except(['resetAuthenticated']);
     }
 
     // FORGOT
@@ -127,9 +129,11 @@ class PasswordController extends Controller
         // database. Otherwise we will parse the error and return the response.
         $response = $this->broker()->reset(
             $this->credentials($request), function ($user, $password) {
-            $this->resetPassword($user, $password);
-        }
+                $this->resetPassword($user, $password);
+            }
         );
+
+        dd($response);
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
@@ -179,7 +183,7 @@ class PasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
      * @param  string $password
      * @return void
      */
@@ -196,6 +200,11 @@ class PasswordController extends Controller
         $this->guard()->login($user);
     }
 
+    public function guard()
+    {
+        return Auth::guard();
+    }
+
     /**
      * Get the response for a successful password reset.
      *
@@ -204,8 +213,12 @@ class PasswordController extends Controller
      */
     protected function sendResetResponse($response)
     {
-        return redirect($this->redirectPath())
-            ->with('status', trans($response));
+        return response()->json([
+            'ok' => 1,
+            'status' => trans($response)
+        ]);
+//        return redirect($this->redirectPath())
+//            ->with('status', trans($response));
     }
 
     /**
@@ -217,8 +230,34 @@ class PasswordController extends Controller
      */
     protected function sendResetFailedResponse(Request $request, $response)
     {
-        return redirect()->back()
-            ->withInput($request->only('email'))
-            ->withErrors(['email' => trans($response)]);
+        return response()
+            ->json([
+                'ok' => 0,
+                'error' => trans($response)
+            ]);
+//        return redirect()->back()
+//            ->withInput($request->only('email'))
+//            ->withErrors(['email' => trans($response)]);
+    }
+
+    /**
+     * Reset password for logged in users.
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function resetAuthenticated(Request $request)
+    {
+        $this->validate($request, ['password' => 'required|confirmed|min:6']);
+
+        $credentials = $request->only('password', 'password_confirmation');
+
+        $credentials['email'] = auth()->user()->email;
+
+        $user = auth()->user();
+        $user->update(['password' => bcrypt($credentials['password'])]);
+
+        return $user->save() ? $this->getResetSuccessResponse(Password::PASSWORD_RESET)
+            : 'Error';
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +18,12 @@ use Illuminate\Http\Request;
 //    return $request->user();
 //});
 
-Route::post('register', 'AuthController@register');
+Route::post('register', 'Api\AuthController@register');
 
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
-    'prefix' => 'group'
+    'prefix' => 'group',
+    'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'GroupController@index')->name('group-list');
     Route::post('/add-member', 'GroupController@addMember')->name('group-add-member');
@@ -29,35 +31,68 @@ Route::group([
 
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
-    'prefix' => 'transaction'
+    'prefix' => 'transaction',
+    'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'TransactionController@index')->name('transaction-list');
 });
 
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
-    'prefix' => 'transaction-category'
+    'prefix' => 'transaction-category',
+    'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'TransactionCategoryController@index')->name('transaction-category-list');
     Route::get('/{id}', 'TransactionCategoryController@show')->name('transaction-category-show');
 });
 
 Route::group([
-    'middleware' => 'api',
-    'prefix' => 'auth'
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'image',
+    'namespace' => 'Api'
+], function ($router) {
+    Route::get('/{account_id}', 'ImageController@show')->name('image-show');
+    Route::post('/', 'ImageController@store')->name('image-store');
+});
+
+Route::group([
+    'middleware' => ['api'],
+    'prefix' => 'auth',
+    'namespace' => 'Api'
 ], function ($router) {
     Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
-
-    Route::post('password/email', 'PasswordController@sendResetLinkEmail');
 });
 
 Route::group([
-    'middleware' => ['api'], //, 'auth:api'
-    'prefix' => 'image'
+    'middleware' => ['api', 'auth:api'],
+    'prefix' => 'password',
+    'namespace' => 'Api'
 ], function ($router) {
-    Route::get('/{account_id}', 'ImageController@show')->name('image-show');
-    Route::post('/', 'ImageController@store')->name('image-store');
+    Route::post('/reset-auth', 'PasswordController@resetAuthenticated');
+});
+
+Route::group([
+    'middleware' => ['api'],
+    'prefix' => 'password',
+    'namespace' => 'Api'
+], function ($router) {
+    // Forgot
+    //Route::post('email', 'PasswordController@sendResetLinkEmail')->name('api.password.email');
+    //$router->get('reset', 'PasswordController@showLinkRequestForm')->name('api.password.request');
+    $router->post('email', 'PasswordController@sendResetLinkEmail')->name('api.password.email');
+    $router->post('reset', 'PasswordController@reset')->name('api.password.reset');
+
+    // Reset Authenticated
+    //Route::get('auth/password/reset', 'Auth\PasswordController@getResetAuthenticatedView');
+});
+
+Route::group([
+    'middleware' => ['web'],
+    'prefix' => 'password',
+    'namespace' => 'Api'
+], function ($router) {
+    Route::get('reset/{token}', 'PasswordController@showResetForm')->name('api.password.reset-form');
 });
