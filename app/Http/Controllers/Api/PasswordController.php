@@ -4,16 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Foundation\Auth\RedirectsUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
+//use Illuminate\Foundation\Auth\RedirectsUsers;
+
 class PasswordController extends Controller
 {
-    use RedirectsUsers;
+//    use RedirectsUsers;
 
     /**
      * Create a new AuthController instance.
@@ -79,7 +80,11 @@ class PasswordController extends Controller
      */
     protected function sendResetLinkResponse($response)
     {
-        return back()->with('status', trans($response));
+        return response()->json([
+            'ok' => 1,
+            'status' => trans($response)
+        ]);
+//        return back()->with('status', trans($response));
     }
 
     /**
@@ -91,9 +96,14 @@ class PasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        return back()->withErrors(
-            ['email' => trans($response)]
-        );
+        return response()
+            ->json([
+                'ok' => 0,
+                'error' => trans($response)
+            ]);
+//        return back()->withErrors(
+//            ['email' => trans($response)]
+//        );
     }
 
     // RESET
@@ -127,20 +137,22 @@ class PasswordController extends Controller
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
-        $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
-                $this->resetPassword($user, $password);
-            }
-        );
+        $tokenData = null;
+        $response = $this->broker()->reset($this->credentials($request), function ($user, $password) {
+            $this->resetPassword($user, $password);
+        });
 
-        dd($response);
+        $credentials = $request->only('email', 'password');
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
-        return $response == Password::PASSWORD_RESET
-            ? $this->sendResetResponse($response)
-            : $this->sendResetFailedResponse($request, $response);
+        if($response == Password::PASSWORD_RESET) {
+            $token = $this->guard()->attempt($credentials);
+            return $this->sendResetResponse($response, $token);
+        }
+
+        return $this->sendResetFailedResponse($request, $response);
     }
 
     /**
@@ -185,7 +197,6 @@ class PasswordController extends Controller
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable $user
      * @param  string $password
-     * @return void
      */
     protected function resetPassword($user, $password)
     {
@@ -197,11 +208,12 @@ class PasswordController extends Controller
 
         event(new PasswordReset($user));
 
-        $this->guard()->login($user);
+//        $this->guard()->login($user);
     }
 
     public function guard()
     {
+        dd(Auth::guard());
         return Auth::guard();
     }
 
@@ -209,13 +221,17 @@ class PasswordController extends Controller
      * Get the response for a successful password reset.
      *
      * @param  string $response
+     * @param string $token
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    protected function sendResetResponse($response)
+    protected function sendResetResponse($response, $token)
     {
         return response()->json([
             'ok' => 1,
-            'status' => trans($response)
+            'status' => trans($response),
+            'access_token' => $token,
+            'token_type' => 'bearer',
+//            'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);
 //        return redirect($this->redirectPath())
 //            ->with('status', trans($response));

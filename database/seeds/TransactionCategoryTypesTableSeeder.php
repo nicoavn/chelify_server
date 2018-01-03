@@ -12,12 +12,12 @@ class TransactionCategoryTypesTableSeeder extends Seeder
     public function run()
     {
         DB::table('transaction_category_types')->insert([
-            'name' => 'Activos',
+            'name' => 'Ingresos',
             'created_at' => DB::raw('CURRENT_TIMESTAMP')
         ]);
 
         DB::table('transaction_category_types')->insert([
-            'name' => 'Pasivos',
+            'name' => 'Egresos',
             'created_at' => DB::raw('CURRENT_TIMESTAMP')
         ]);
     }

@@ -84,7 +84,6 @@ class GroupController extends Controller
             $response['error'] = $e->getMessage();
         }
 
-
         return response()->json($response);
     }
 

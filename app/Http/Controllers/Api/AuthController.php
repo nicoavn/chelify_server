@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 
 class AuthController extends Controller
 {
@@ -18,7 +19,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
     public function register(Request $request)
@@ -27,20 +28,36 @@ class AuthController extends Controller
         $email = $request->input('email');
         $password = $request->input('password');
 
-        $account = Account::make();
-        $account->type()->associate(AccountType::find('1'));
-        $account->save();
+        try {
+            if (User::where('email', '=', $email)->exists()) {
+                return response()->json([
+                    'ok' => 0,
+                    'error' => 'Este correo ya fue existe.'
+                ]);
+            }
 
-        $user = User::make([
-            'name' => $name,
-            'email' => $email,
-            'password' => bcrypt($password)
-        ]);
+            $account = Account::make();
+            $account->type()->associate(AccountType::find('1'));
+            $account->save();
 
-        $user->account()
-            ->associate($account)
-            ->save();
-        return $user;
+            $user = User::make([
+                'name' => $name,
+                'email' => $email,
+                'password' => bcrypt($password)
+            ]);
+
+            $user->account()
+                ->associate($account)
+                ->save();
+        } catch (Exception $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        $token = $this->guard()->attempt(['email' => $email, 'password' => $password]);
+        return $this->respondWithToken($token);
     }
 
     /**
@@ -53,7 +70,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
+        dd($this->guard()->attempt($credentials));
         if ($token = $this->guard()->attempt($credentials)) {
             return $this->respondWithToken($token);
         }
@@ -82,6 +99,7 @@ class AuthController extends Controller
     {
         return response()->json([
             'access_token' => $token,
+            'user' => $this->guard()->user(),
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60
         ]);

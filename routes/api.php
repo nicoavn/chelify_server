@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'user',
+    'namespace' => 'Api'
+], function ($router) {
+    Route::get('/{user_id}', 'UserController@show')->name('user-show');
+    Route::get('/info/{user_id}', 'UserController@info')->name('user-info');
+    Route::get('{user_id}/month-summary/', 'UserController@monthSummary')->name('user-month-summary');
+    Route::post('/', 'UserController@store')->name('user-store');
+});
+
 Route::post('register', 'Api\AuthController@register');
 
 Route::group([
@@ -51,8 +62,10 @@ Route::group([
     'prefix' => 'image',
     'namespace' => 'Api'
 ], function ($router) {
-    Route::get('/{account_id}', 'ImageController@show')->name('image-show');
+//    Route::get('/{image_id}', 'ImageController@show')->name('image-show');
     Route::post('/', 'ImageController@store')->name('image-store');
+    Route::post('upload', 'ImageController@store')->name('image-upload');
+    Route::get('show/{fileName}', 'ImageController@image')->name('image-show');
 });
 
 Route::group([
