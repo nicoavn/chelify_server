@@ -10,6 +10,7 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
@@ -25,5 +26,10 @@ class Transaction extends Model
     public function category()
     {
         return $this->belongsTo('App\TransactionCategory', 'transaction_category_id');
+    }
+
+    public function financialInstrument()
+    {
+        return $this->belongsTo('App\FinancialInstrument', 'financial_instrument_id');
     }
 }
