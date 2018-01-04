@@ -14,8 +14,10 @@ class DatabaseSeeder extends Seeder
         $this->call(AccountTypesTableSeeder::class);
         $this->call(FinancialInstrumentTypesTableSeeder::class);
         $this->call(TransactionCategoryTypesTableSeeder::class);
+        $this->call(TransactionCategoriesTableSeeder::class);
         $this->call(FinancialEntitiesTableSeeder::class);
         $this->call(ImageTypesSeeder::class);
         $this->call(UsersTableSeeder::class);
+        $this->call(PlacesTableSeeder::class);
     }
 }

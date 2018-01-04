@@ -47,4 +47,9 @@ class Account extends Model
     {
         return $this->hasMany('App\Image');
     }
+
+    public function __toString()
+    {
+        return "Account ID: " . $this->id;
+    }
 }
