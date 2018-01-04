@@ -19,7 +19,7 @@ class CreateAccountsTable extends Migration
             $table->integer('account_type_id')->unsigned();
             $table->foreign('account_type_id')->references('id')->on('account_types');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

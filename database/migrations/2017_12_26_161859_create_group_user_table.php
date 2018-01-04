@@ -20,7 +20,7 @@ class CreateGroupUserTable extends Migration
             $table->integer('group_id')->unsigned();
             $table->foreign('group_id')->references('id')->on('groups');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

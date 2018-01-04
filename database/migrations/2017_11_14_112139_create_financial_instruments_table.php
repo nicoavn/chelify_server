@@ -27,7 +27,7 @@ class CreateFinancialInstrumentsTable extends Migration
             $table->integer('financial_instrument_type_id')->unsigned();
             $table->foreign('financial_instrument_type_id')->references('id')->on('financial_instrument_types');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

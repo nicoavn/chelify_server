@@ -28,7 +28,7 @@ class CreateReportsTable extends Migration
             $table->integer('transaction_category_type_id')->unsigned();
             $table->foreign('transaction_category_type_id')->references('id')->on('transaction_category_types');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
     }
 

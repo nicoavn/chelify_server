@@ -24,7 +24,7 @@ class CreateUserGroupContributionsTable extends Migration
 
             $table->double('amount');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
     }
 

@@ -24,7 +24,7 @@ class CreateImagesTable extends Migration
 
             $table->string('file_name');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
         });
     }
 

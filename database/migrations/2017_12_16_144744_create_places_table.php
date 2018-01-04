@@ -19,7 +19,7 @@ class CreatePlacesTable extends Migration
             $table->string('name');
             $table->double('lat', 10, 8);
             $table->double('lon', 11, 8);
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

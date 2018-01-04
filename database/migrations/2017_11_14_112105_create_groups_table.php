@@ -23,7 +23,7 @@ class CreateGroupsTable extends Migration
             $table->integer('account_id')->unsigned();
             $table->foreign('account_id')->references('id')->on('accounts');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

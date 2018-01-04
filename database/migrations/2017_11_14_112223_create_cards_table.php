@@ -25,7 +25,7 @@ class CreateCardsTable extends Migration
 //            $table->integer('financial_instrument_id')->unsigned();
 //            $table->foreign('financial_instrument_id')->references('id')->on('financial_instruments');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

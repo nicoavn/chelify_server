@@ -24,7 +24,7 @@ class CreateRecurrentTransactionsTable extends Migration
             $table->integer('charge_to')->unsigned();
             $table->foreign('charge_to')->references('id')->on('financial_instruments');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }

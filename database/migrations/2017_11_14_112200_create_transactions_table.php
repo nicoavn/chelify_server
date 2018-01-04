@@ -27,7 +27,7 @@ class CreateTransactionsTable extends Migration
             $table->integer('transaction_category_id')->unsigned()->nullable();
             $table->foreign('transaction_category_id')->references('id')->on('transaction_categories');
 
-            $table->timestamps();
+            $table->nullableTimestamps();
             $table->softDeletes();
         });
     }
