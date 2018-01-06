@@ -25,8 +25,8 @@ class AlterGroupUserTableAddUniqueGroupUser extends Migration
      */
     public function down()
     {
-        Schema::table('group_user', function (Blueprint $table) {
-            $table->dropUnique('group_user_unique');
-        });
+//        Schema::table('group_user', function (Blueprint $table) {
+//            $table->dropUnique('group_user_unique');
+//        });
     }
 }
