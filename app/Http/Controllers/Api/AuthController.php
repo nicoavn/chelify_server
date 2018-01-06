@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Account;
 use App\AccountType;
+use App\FinancialInstrument;
+use App\FinancialInstrumentType;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
@@ -49,6 +51,19 @@ class AuthController extends Controller
             $user->account()
                 ->associate($account)
                 ->save();
+
+            // Default Financial Instrument Cash
+            $financialInstrument = new FinancialInstrument;
+            $financialInstrument->identifier = "DOP";
+            $financialInstrument->alias = "";
+            $financialInstrument->balance = 0.0;
+            $financialInstrument->type()
+                ->associate(FinancialInstrumentType::find(4));
+
+            $financialInstrument->account()
+                ->associate($account);
+
+            $financialInstrument->save();
         } catch (Exception $e) {
             return response()->json([
                 'ok' => 0,

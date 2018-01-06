@@ -16,6 +16,11 @@ class FinancialInstrument extends Model
      */
     protected $dates = ['deleted_at'];
 
+    public function account()
+    {
+        return $this->belongsTo('App\Account', 'owner_id');
+    }
+
     public function type()
     {
         return $this->belongsTo('App\FinancialInstrumentType', 'financial_instrument_type_id');

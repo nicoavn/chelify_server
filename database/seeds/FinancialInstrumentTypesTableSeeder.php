@@ -27,6 +27,11 @@ class FinancialInstrumentTypesTableSeeder extends Seeder
         ]);
 
         DB::table('financial_instrument_types')->insert([
+            'name' => 'Moneda',
+            'created_at' => DB::raw('CURRENT_TIMESTAMP')
+        ]);
+
+        DB::table('financial_instrument_types')->insert([
             'name' => 'Otros',
             'created_at' => DB::raw('CURRENT_TIMESTAMP')
         ]);
