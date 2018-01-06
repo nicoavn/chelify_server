@@ -18,7 +18,7 @@ class FinancialInstrument extends Model
 
     public function account()
     {
-        return $this->belongsTo('App\Account', 'owner_id');
+        return $this->belongsTo('App\Account');
     }
 
     public function type()

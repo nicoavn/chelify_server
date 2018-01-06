@@ -20,6 +20,13 @@ class UsersTableSeeder extends Seeder
             'account_id' => $account->id,
         ]);
 
+        DB::table('financial_instruments')->insert([
+            'identifier' => 'Efectivo',
+            'alias' => '',
+            'balance' => 0.0,
+            owner
+        ]);
+
         $account = Account::create(['account_type_id' => 1]);
         DB::table('users')->insert([
             'name' => 'José Torres',

@@ -20,8 +20,8 @@ class CreateFinancialInstrumentsTable extends Migration
             $table->string('alias');
             $table->double('balance');
 
-            $table->integer('owner_id')->unsigned();
-            $table->foreign('owner_id')->references('id')->on('accounts');
+            $table->integer('account_id')->unsigned();
+            $table->foreign('account_id')->references('id')->on('accounts');
             $table->integer('financial_entity_id')->unsigned()->nullable();
             $table->foreign('financial_entity_id')->references('id')->on('financial_entities');
             $table->integer('financial_instrument_type_id')->unsigned();
