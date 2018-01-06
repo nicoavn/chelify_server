@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Account;
 use App\FinancialInstrument;
 use App\Http\Controllers\Controller;
 use App\Place;
 use App\Transaction;
 use App\TransactionCategory;
 use GoogleMaps\GoogleMaps;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 //use Illuminate\Support\Facades\Auth;
@@ -51,11 +51,18 @@ class TransactionController extends Controller
         $transactionCategoryId = $request->get('transaction_category_id');
         $googlePlaceId = $request->get('google_place_id');
 
-        $financialInstrument = FinancialInstrument::findOrFail($financialInstrumentId);
-        $transactionCategory = TransactionCategory::findOrFail($transactionCategoryId);
+        try {
+            $financialInstrument = FinancialInstrument::findOrFail($financialInstrumentId);
+            $transactionCategory = TransactionCategory::findOrFail($transactionCategoryId);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
         $place = Place::where('google_place_id', $googlePlaceId)->first();
 
-        if($place == null) {
+        if ($place == null) {
             $placeInfo = $this->getGooglePlaceInfoFromService($googlePlaceId);
             $place = new Place;
             $place->google_place_id = $googlePlaceId;
