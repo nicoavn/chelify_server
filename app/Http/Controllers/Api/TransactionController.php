@@ -26,8 +26,6 @@ class TransactionController extends Controller
     public function index()
     {
         return response()->json(Transaction::with(['category', 'financialInstrument'])->get());
-        $user = Auth::user();
-        dd($user);
         $transactions = Transaction::where('account_id', $user->account->id);
         $transactions->load('category');
         return response()->json($transactions);
