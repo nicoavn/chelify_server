@@ -24,7 +24,8 @@ class UsersTableSeeder extends Seeder
             'identifier' => 'Efectivo',
             'alias' => '',
             'balance' => 0.0,
-            owner
+            'account_id' => $account->id,
+            'financial_instrument_type_id' => 4
         ]);
 
         $account = Account::create(['account_type_id' => 1]);
