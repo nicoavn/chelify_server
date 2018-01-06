@@ -32,4 +32,9 @@ class Transaction extends Model
     {
         return $this->belongsTo('App\FinancialInstrument', 'financial_instrument_id');
     }
+
+    public function place()
+    {
+        return $this->belongsTo('App\Place');
+    }
 }

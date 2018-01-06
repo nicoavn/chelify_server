@@ -46,6 +46,7 @@ Route::group([
     'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'TransactionController@index')->name('transaction-list');
+    Route::post('/', 'TransactionController@store')->name('transaction-store');
 });
 
 Route::group([

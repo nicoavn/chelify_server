@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Account;
+use App\FinancialInstrument;
 use App\Http\Controllers\Controller;
 use App\Place;
 use App\Transaction;
+use App\TransactionCategory;
+use GoogleMaps\GoogleMaps;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+
+//use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -40,31 +45,45 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        $account_id = $request->get('account_id', '');
         $title = $request->get('title', '');
         $amount = $request->get('amount', 0.0);
         $financialInstrumentId = $request->get('financial_instrument_id');
-        $transactionCategory = $request->get('transaction_category_id');
+        $transactionCategoryId = $request->get('transaction_category_id');
         $googlePlaceId = $request->get('google_place_id');
-        $place = $request->get('place_name');
-        $placeName = $request->get('place_name');
 
-        $account = Account::findOrFail($account_id);
+        $financialInstrument = FinancialInstrument::findOrFail($financialInstrumentId);
+        $transactionCategory = TransactionCategory::findOrFail($transactionCategoryId);
+        $place = Place::where('google_place_id', $googlePlaceId)->first();
 
-        $place = Place::findOrNew('google_place_id', $googlePlaceId);
-        $place->name = $placeName;
-        $place->save();
+        if($place == null) {
+            $placeInfo = $this->getGooglePlaceInfoFromService($googlePlaceId);
+            $place = new Place;
+            $place->google_place_id = $googlePlaceId;
+            $place->name = $placeInfo['result']['name'];
+            $place->lat = $placeInfo['result']['geometry']['location']['lat'];
+            $place->lon = $placeInfo['result']['geometry']['location']['lng'];
+            $place->save();
+        }
 
         $transaction = new Transaction;
-    }
+        $transaction->title = $title;
+        $transaction->amount = doubleval($amount);
 
-    protected function getGooglePlaceInfoFromService ($googlePlaceId)
-    {
-        $key = 'AIzaSyBbekjFSn_eP7arUVSw6fnnGSilkYfAMAc';
-        $queryString = "placeid={$googlePlaceId}&language=es&key={$key}";
-        $url = 'https://maps.googleapis.com/maps/api/place/details/json?' . $queryString;
+        $transaction->financialInstrument()
+            ->associate($financialInstrument);
 
-        $placeInfo = json_decode($output, true);
+        $transaction->category()
+            ->associate($transactionCategory);
+
+        $transaction->place()
+            ->associate($place);
+
+        $transaction->save();
+
+        return response()->json([
+            'ok' => 1,
+            'transaction' => $transaction
+        ]);
     }
 
     /**
@@ -110,5 +129,17 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    protected function getGooglePlaceInfoFromService($googlePlaceId)
+    {
+        $maps = new GoogleMaps;
+        $response = $maps->load('placedetails')
+            ->setParam([
+                'placeid' => $googlePlaceId,
+                'language' => 'es',
+            ])
+            ->get();
+        return \GuzzleHttp\json_decode($response, true);
     }
 }
