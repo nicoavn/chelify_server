@@ -25,7 +25,7 @@ Route::group([
 ], function ($router) {
     Route::get('/{user_id}', 'UserController@show')->name('user-show');
     Route::get('/info/{user_id}', 'UserController@info')->name('user-info');
-    Route::get('{user_id}/month-summary/', 'UserController@monthSummary')->name('user-month-summary');
+    Route::get('{user_id}/month-summary', 'UserController@monthSummary')->name('user-month-summary');
     Route::post('/', 'UserController@store')->name('user-store');
 });
 

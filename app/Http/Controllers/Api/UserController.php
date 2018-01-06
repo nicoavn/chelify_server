@@ -28,7 +28,7 @@ class UserController extends Controller
         $startDate = $now->firstOfMonth()->toDateTimeString();
         $endDate = $now->lastOfMonth()->toDateTimeString();
 
-        dd(self::summary($user->account, $startDate, $endDate));
+        return response()->json(self::summary($user->account, $startDate, $endDate));
     }
 
     /**
@@ -43,7 +43,8 @@ class UserController extends Controller
 
         $query = DB::table('transactions AS t')
             ->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
-            ->where('t.account_id', "=", $account->id)
+            ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
+            ->where('fi.account_id', "=", $account->id)
             ->whereBetween('t.created_at', [$startDate, $endDate]);
 
         if($category != null)
