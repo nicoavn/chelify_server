@@ -35,5 +35,13 @@ class UsersTableSeeder extends Seeder
             'password' => bcrypt('123456'),
             'account_id' => $account->id,
         ]);
+
+        DB::table('financial_instruments')->insert([
+            'identifier' => 'Efectivo',
+            'alias' => '',
+            'balance' => 0.0,
+            'account_id' => $account->id,
+            'financial_instrument_type_id' => 4
+        ]);
     }
 }
