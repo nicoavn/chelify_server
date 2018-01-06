@@ -11,7 +11,7 @@ $factory->define(App\Transaction::class, function (Faker $faker) {
     $place = \App\Place::inRandomOrder()->get()->first();
 
     return [
-        'title' => ucfirst($faker->randomElement()),
+        'title' => ucfirst($faker->randomElement(["Gasto-A", "Gasto-B", "Gasto-C"])),
         'amount' => $faker->numberBetween(10000, 999999) / 10,
         'financial_instrument_id' => $financialInstrument->id,
         'transaction_category_id' => $transactionCategory->id,

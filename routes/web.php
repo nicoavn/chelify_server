@@ -13,7 +13,8 @@
 
 Route::get('/', function () {
     //$users = factory(App\User::class, 5)->create();
-    $transactions = factory(App\Transaction::class, 10)->create();
+    $transactions = factory(App\Transaction::class, 50)->create();
+    dd($transactions);
 
     return view('welcome');
 });
