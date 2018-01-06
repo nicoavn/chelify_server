@@ -28,6 +28,11 @@ class UserController extends Controller
         $startDate = $now->firstOfMonth()->toDateTimeString();
         $endDate = $now->lastOfMonth()->toDateTimeString();
 
+//        DB::enableQueryLog();
+//        self::summary($user->account, $startDate, $endDate);
+//        $queries = DB::getQueryLog();
+//        dd(end($queries)); // only last query
+
         return response()->json(self::summary($user->account, $startDate, $endDate));
     }
 
@@ -49,8 +54,10 @@ class UserController extends Controller
 
         if($category != null)
             $query->where('transaction_category_id', '=', $category->id);
+        else
+            $query->groupBy('transaction_category_id');
 
-        return $query->get();
+        return $query->select(DB::raw('tc.name'), DB::raw('SUM(t.amount) as total'))->get();
     }
     
     /**
