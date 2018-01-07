@@ -96,7 +96,19 @@ class GroupController extends Controller
      */
     public function show($id)
     {
-        //
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $group = Group::findOrFail($id);
+            $group->load(['manager', 'users']);
+            $response['group'] = $group;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
     }
 
     public function showByUser($userId)

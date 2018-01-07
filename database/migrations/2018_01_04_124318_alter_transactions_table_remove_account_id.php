@@ -26,12 +26,6 @@ class AlterTransactionsTableRemoveAccountId extends Migration
      */
     public function down()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->integer('account_id')->unsigned()->after('amount');
-        });
 
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->foreign('account_id')->references('id')->on('accounts');
-        });
     }
 }

@@ -29,6 +29,7 @@ Route::group([
     'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'GroupController@index')->name('group.list');
+    Route::get('/{groupId}', 'GroupController@show')->name('group.show');
     Route::post('/add-member', 'GroupController@addMember')->name('group.add-member');
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
 });
