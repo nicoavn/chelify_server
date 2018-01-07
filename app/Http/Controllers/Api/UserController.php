@@ -13,53 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
-    public function info($userId)
-    {
-        $user = User::findOrFail($userId);
-        $user->load(['account.images']);
-        return response()->json($user);
-    }
-
-    public function monthSummary($userId)
-    {
-        $user = User::findOrFail($userId);
-
-        $now = Carbon::now();
-        $startDate = $now->firstOfMonth()->toDateTimeString();
-        $endDate = $now->lastOfMonth()->toDateTimeString();
-
-//        DB::enableQueryLog();
-//        self::summary($user->account, $startDate, $endDate);
-//        $queries = DB::getQueryLog();
-//        dd(end($queries)); // only last query
-
-        return response()->json(self::summary($user->account, $startDate, $endDate));
-    }
-
-    /**
-     * @param $account
-     * @param $startDate
-     * @param $endDate string
-     * @param $category TransactionCategory
-     * @return Collection Collection
-     */
-    public static function summary($account, $startDate, $endDate, $category = null)
-    {
-
-        $query = DB::table('transactions AS t')
-            ->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
-            ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
-            ->where('fi.account_id', "=", $account->id)
-            ->whereBetween('t.created_at', [$startDate, $endDate]);
-
-        if($category != null)
-            $query->where('transaction_category_id', '=', $category->id);
-        else
-            $query->groupBy('transaction_category_id');
-
-        return $query->select(DB::raw('tc.name'), DB::raw('SUM(t.amount) as total'))->get();
-    }
-    
     /**
      * Display a listing of the resource.
      *
@@ -99,7 +52,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $user->load(['account.images']);
+        return response()->json($user);
     }
 
     /**

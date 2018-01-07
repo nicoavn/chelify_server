@@ -25,7 +25,7 @@ class Account extends Model
 
     public function transactions()
     {
-        return $this->hasMany('App\Transactions');
+        return $this->hasManyThrough('App\Transaction', 'App\FinancialInstrument');
     }
 
     public function type()

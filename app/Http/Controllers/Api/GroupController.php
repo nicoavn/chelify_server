@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use DateTime;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -96,6 +97,23 @@ class GroupController extends Controller
     public function show($id)
     {
         //
+    }
+
+    public function showByUser($userId)
+    {
+        $response = [
+            'ok' => 1
+        ];
+
+        try {
+            $user = User::findOrFail($userId);
+            $response['groups'] = $user->groups;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
     }
 
     /**
