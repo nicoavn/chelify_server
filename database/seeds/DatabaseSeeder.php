@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         $this->call(FinancialEntitiesTableSeeder::class);
         $this->call(ImageTypesSeeder::class);
         $this->call(UsersTableSeeder::class);
+        $this->call(FinancialInstrumentsTableSeeder::class);
         $this->call(PlacesTableSeeder::class);
+        $this->call(GroupsTableSeeder::class);
+        $this->call(GroupUserTableSeeder::class);
     }
 }

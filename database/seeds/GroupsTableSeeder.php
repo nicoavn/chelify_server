@@ -14,26 +14,22 @@ class GroupsTableSeeder extends Seeder
      */
     public function run()
     {
-        $manager = User::inRandomOrder()->get()->first();
-
         $account = Account::create(['account_type_id' => 2]);
-        $id = DB::table('groups')->insertGetId([
+        DB::table('groups')->insert([
             'title' => 'Un Grupo',
-            'manager_id' => $manager->id,
+            'manager_id' => 1,
             'account_id' => $account->id,
             'target_amount' => 1429.99,
             'current_amount' => 450.00,
         ]);
 
-        $group = Group::find($id);
-
-        do
-            $user = User::inRandomOrder()->get()->first();
-        while($user->id == $manager->id);
-
-        DB::table('group_user')->insert([
-            'group_id' => $group->id,
-            'user_id' => $user->id
+        $account = Account::create(['account_type_id' => 2]);
+        DB::table('groups')->insert([
+            'title' => 'Un Grupo',
+            'manager_id' => 2,
+            'account_id' => $account->id,
+            'target_amount' => 1333.99,
+            'current_amount' => 255.00,
         ]);
     }
 }
