@@ -43,6 +43,11 @@ class Account extends Model
         return $this->hasMany('App\FinancialInstrument');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Report');
+    }
+
     public function images()
     {
         return $this->hasMany('App\Image');

@@ -34,6 +34,10 @@ Route::group([
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
 });
 
+//
+// Transaction
+//
+
 Route::group([
     'middleware' => ['api'], //, 'auth:api'
     'prefix' => 'transaction',
@@ -59,6 +63,21 @@ Route::group([
 ], function ($router) {
     Route::get('/', 'TransactionCategoryController@index')->name('transaction.category-list');
     Route::get('/{id}', 'TransactionCategoryController@show')->name('transaction.category-show');
+});
+
+//
+// Report
+//
+
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'report',
+    'namespace' => 'Api'
+], function ($router) {
+    Route::get('/', 'ReportController@index')->name('report.list');
+    Route::get('/build', 'ReportController@build')->name('report.build');
+    Route::get('/{reportId}', 'ReportController@show')->name('report.show');
+    Route::get('/by-account/{accountId}', 'ReportController@showByAccount');
 });
 
 //
