@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Account;
+use App\Card;
+use App\FinancialEntity;
+use App\FinancialInstrument;
+use App\FinancialInstrumentType;
+use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
+
+class FinancialInstrumentController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $identifier = $data['identifier'];
+        $alias = $data['alias'];
+        $balance = $data['balance'];
+        $accountId = $data['account_id'];
+        $financialEntityId = $data['financial_entity_id'];
+        $financialInstrumentTypeId = $data['financial_instrument_type_id'];
+
+        // Card Data
+
+        $provider = $data['provider'];
+        $cardIdentifier = $data['card_identifier'];
+
+        $response = [
+            'ok' => 1
+        ];
+
+        try {
+            $account = Account::findOrFail($accountId);
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+
+        $financialEntity = FinancialEntity::find($financialEntityId);
+        $financialInstrumentType = FinancialInstrumentType::find($financialInstrumentTypeId);
+
+        $financialInstrument = new FinancialInstrument;
+        $financialInstrument->identifier = $identifier;
+        $financialInstrument->alias = $alias;
+        $financialInstrument->balance = $balance;
+        $financialInstrument->account()
+            ->associate($account);
+
+        if ($financialEntity != null)
+            $financialInstrument->financialEntity()
+                ->associate($financialEntity);
+
+        $financialInstrument->type()
+            ->associate($financialInstrumentType);
+        $financialInstrument->save();
+
+        $card = new Card;
+        $card->provider = $provider;
+        $card->identifier = $cardIdentifier;
+        $card->save();
+
+        return response()
+            ->json($response);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

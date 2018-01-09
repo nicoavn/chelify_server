@@ -7,6 +7,7 @@ use App\AccountType;
 use App\Group;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\UserGroupContribution;
 use DateTime;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -40,7 +41,7 @@ class GroupController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -80,6 +81,31 @@ class GroupController extends Controller
             $group = Group::find($data['group_id'])->first();
             $dt = new DateTime;
             $group->users()->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
+        } catch (Exception $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+
+        return response()->json($response);
+    }
+
+    public function addContribution(Request $request)
+    {
+        $response = ['ok' => 1];
+
+        $data = $request->all();
+
+        try {
+            $user = User::find($data['user_id']);
+            $group = Group::find($data['group_id']);
+            $contribution = $data['contribution'];
+            $userGroupContribution = new UserGroupContribution;
+            $userGroupContribution->user()
+                ->associate($user);
+            $userGroupContribution->group()
+                ->associate($group);
+            $userGroupContribution->amount = $contribution;
+            $userGroupContribution->save();
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();

@@ -87,9 +87,7 @@ class ReportController extends Controller
             }
         }
 
-//        DB::enableQueryLog();
         $response['result'] = $result->get();
-//        dd(DB::getQueryLog());
         return response()
             ->json($response);
     }

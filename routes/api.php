@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::post('register', 'Api\AuthController@register');
+Route::post('/register', 'Api\AuthController@register');
 
 //
 // Group
@@ -32,6 +32,7 @@ Route::group([
     Route::get('/{groupId}', 'GroupController@show')->name('group.show');
     Route::post('/add-member', 'GroupController@addMember')->name('group.add-member');
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
+    Route::post('/add-contribution', 'GroupController@addContribution');
 });
 
 //
