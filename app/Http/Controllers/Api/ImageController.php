@@ -55,7 +55,7 @@ class ImageController extends Controller
 
     public function image($fileName)
     {
-        $path = storage_path('app/user-images/' . $fileName);
+        $path = storage_path('app/account-images/' . $fileName);
 //        dd($path);
 //        dd(File::exists($path));
         if (!File::exists($path)) {
