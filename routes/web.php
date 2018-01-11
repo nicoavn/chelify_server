@@ -16,7 +16,7 @@ Route::get('/', function () {
 //    $transactions = factory(App\Transaction::class, 50)->create();
 //    dd($transactions);
 
-//    return view('welcome');
+    return view('welcome');
 });
 
 Auth::routes();
