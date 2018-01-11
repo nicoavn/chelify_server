@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Account;
 use App\Http\Controllers\Controller;
-use App\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,27 +18,30 @@ class ImageController extends Controller
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
 
     }
 
     public function upload(Request $request)
     {
         $data = $request->all();
-        $user = User::findOrFail($data['user_id']);
+        $account = Account::findOrFail($data['account_id']);
 
         $path = $request->file('image')->store('tmp');
         $filename = basename($path);
 
         Image::make(storage_path('app/' . $path))
             ->fit(200, 200)
-            ->save(storage_path('app/user-images/' . $filename));
+            ->save(storage_path('app/account-images/' . $filename));
 
         $image = new \App\Image;
 
         $image->file_name = $filename;
         $image->image_type_id = 1;
-        $image->account_id = $user->account_id;
+
+        $image->account()
+            ->associate($account);
 
         $image->save();
 
@@ -81,6 +84,28 @@ class ImageController extends Controller
         try {
             $image = Image::findOrFail($id);
             $response['transaction'] = $image;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $accountId
+     * @return \Illuminate\Http\Response
+     */
+    public function showByAccount($accountId)
+    {
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $account = Account::findOrFail($accountId);
+            $response['images'] = $account->images;
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();

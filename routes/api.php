@@ -93,6 +93,7 @@ Route::group([
     Route::get('/{imageId}', 'ImageController@show')->name('image-show');
     Route::post('/upload', 'ImageController@upload')->name('image.upload');
     Route::get('/show/{fileName}', 'ImageController@image')->name('image.show');
+    Route::get('/by-account/{accountId}', 'ImageController@showByAccount')->name('image.by-account');
 });
 
 //
@@ -108,7 +109,7 @@ Route::group([
     'prefix' => 'user',
     'namespace' => 'Api'
 ], function ($router) {
-    Route::get('/{user_id}', 'UserController@show')->name('user.show');
+    Route::get('/{userId}', 'UserController@show')->name('user.show');
 });
 
 Route::group([

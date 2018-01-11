@@ -24,4 +24,9 @@ class Image extends Model
     {
         return $this->belongsTo('App\ImageType', 'image_type_id');
     }
+
+    public function account()
+    {
+        return $this->belongsTo('App\Account');
+    }
 }
