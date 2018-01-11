@@ -62,8 +62,8 @@ Route::group([
     'prefix' => 'transaction-category',
     'namespace' => 'Api'
 ], function ($router) {
-    Route::get('/', 'TransactionCategoryController@index')->name('transaction.category-list');
-    Route::get('/{id}', 'TransactionCategoryController@show')->name('transaction.category-show');
+    Route::get('/', 'TransactionCategoryController@index')->name('transaction-category.list');
+    Route::get('/{id}', 'TransactionCategoryController@show')->name('transaction-category.show');
 });
 
 //
@@ -75,6 +75,7 @@ Route::group([
     'prefix' => 'financial-instrument',
     'namespace' => 'Api'
 ], function ($router) {
+    Route::get('/', 'FinancialInstrumentController@index')->name('financial-instrument.list');
     Route::get('/{financialInstrumentId}', 'FinancialInstrumentController@show')->name('financial-instrument.show');
     Route::get('/by-account/{accountId}', 'FinancialInstrumentController@showByAccount')->name('financial-instrument.by-account');
     Route::post('/', 'FinancialInstrumentController@store')->name('financial-instrument.store');

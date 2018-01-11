@@ -20,7 +20,7 @@ class FinancialInstrumentController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(FinancialInstrument::all());
     }
 
     /**
