@@ -2,6 +2,11 @@
 
 namespace App\Console;
 
+use App\FinancialInstrument;
+use App\RecurrentTransaction;
+use App\Transaction;
+use App\TransactionCategory;
+use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,6 +31,28 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        $schedule->call(function () {
+//            DB::table('recent_users')->delete();
+            $now = Carbon::now();
+            $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
+            foreach($recurrentTransactions as $rt) {
+
+                $financialInstrument = FinancialInstrument::find($rt->charge_to);
+                $transactionCategory = TransactionCategory::find('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY);
+
+                $transaction = new Transaction;
+                $transaction->title = $rt->title;
+                $transaction->amount = $rt->amount;
+                $transaction->financialInstrument()
+                    ->associate($financialInstrument);
+
+                $transaction->category()
+                    ->associate($transactionCategory);
+
+                $transaction->save();
+            }
+
+        })->dailyAt("00:21");
     }
 
     /**

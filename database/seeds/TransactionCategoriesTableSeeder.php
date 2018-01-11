@@ -45,6 +45,7 @@ class TransactionCategoriesTableSeeder extends Seeder
             ['name' => 'Reparaciones', 'transaction_category_type_id' => 2, 'icon' => 'repair'],
             ['name' => 'Servicio de agua', 'transaction_category_type_id' => 2, 'icon' => 'water'],
             ['name' => 'Servicio de electricidad', 'transaction_category_type_id' => 2, 'icon' => 'electricity'],
+            ['name' => 'Transacciones recurrentes', 'transaction_category_type_id' => 2, 'icon' => 'recurrent'],
             ['name' => 'Robo o pérdida', 'transaction_category_type_id' => 2, 'icon' => 'robbery'],
             ['name' => 'Gastos menores', 'transaction_category_type_id' => 2, 'icon' => 'others'],
             ['name' => 'Otro', 'transaction_category_type_id' => 2, 'icon' => 'others'],
