@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Facades\Image as ImageHelper;
 
 class ImageController extends Controller
 {
@@ -31,11 +31,11 @@ class ImageController extends Controller
         $path = $request->file('image')->store('tmp');
         $filename = basename($path);
 
-        Image::make(storage_path('app/' . $path))
+        ImageHelper::make(storage_path('app/' . $path))
             ->fit(200, 200)
             ->save(storage_path('app/account-images/' . $filename));
 
-        $image = new \App\Image;
+        $image = new Image;
 
         $image->file_name = $filename;
         $image->image_type_id = 1;
