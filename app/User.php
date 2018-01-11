@@ -64,6 +64,15 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\UserGroupContributions');
     }
 
+    public function profileImage()
+    {
+        $image = $this->account->images()
+            ->where('image_type_id', 1)
+            ->orderByDesc('id')
+            ->first();
+        return $image;
+    }
+
     /**
      * Send the password reset notification.
      *

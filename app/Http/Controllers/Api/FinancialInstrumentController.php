@@ -100,7 +100,40 @@ class FinancialInstrumentController extends Controller
      */
     public function show($id)
     {
-        //
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $financialInstrument = FinancialInstrument::findOrFail($id);
+            $response['financial_instrument'] = $financialInstrument;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $accountId
+     * @return \Illuminate\Http\Response
+     */
+    public function showByAccount($accountId)
+    {
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $account = Account::findOrFail($accountId);
+            $response['financial_instruments'] = $account->financialInstruments;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
     }
 
     /**

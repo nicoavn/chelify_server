@@ -67,6 +67,20 @@ Route::group([
 });
 
 //
+// Financial Instrument
+//
+
+Route::group([
+    'middleware' => ['api'], //, 'auth:api'
+    'prefix' => 'financial-instrument',
+    'namespace' => 'Api'
+], function ($router) {
+    Route::get('/{financialInstrumentId}', 'FinancialInstrumentController@show')->name('financial-instrument.show');
+    Route::get('/by-account/{accountId}', 'FinancialInstrumentController@showByAccount')->name('financial-instrument.by-account');
+    Route::post('/', 'FinancialInstrumentController@store')->name('financial-instrument.store');
+});
+
+//
 // Report
 //
 
@@ -90,7 +104,7 @@ Route::group([
     'prefix' => 'image',
     'namespace' => 'Api'
 ], function ($router) {
-    Route::get('/{imageId}', 'ImageController@show')->name('image-show');
+    Route::get('/{imageId}', 'ImageController@show')->name('image.image-show');
     Route::post('/upload', 'ImageController@upload')->name('image.upload');
     Route::get('/show/{fileName}', 'ImageController@image')->name('image.show');
     Route::get('/by-account/{accountId}', 'ImageController@showByAccount')->name('image.by-account');
