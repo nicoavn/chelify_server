@@ -25,7 +25,7 @@ class Account extends Model
 
     public function transactions()
     {
-        return $this->hasManyThrough('App\Transaction', 'App\FinancialInstrument');
+        return $this->hasManyThrough('App\Transaction', 'App\FinancialInstrument')->orderByDesc('created_at');
     }
 
     public function type()
