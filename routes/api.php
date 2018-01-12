@@ -33,6 +33,7 @@ Route::group([
     Route::post('/add-member', 'GroupController@addMember')->name('group.add-member');
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
     Route::post('/add-contribution', 'GroupController@addContribution');
+    Route::get('/{groupId}/contributions', 'GroupController@contributions')->name('group.contributions');
 });
 
 //

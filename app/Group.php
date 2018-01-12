@@ -30,4 +30,9 @@ class Group extends Model
     {
         return $this->belongsToMany('App\User');
     }
+    
+    public function contributions()
+    {
+        return $this->hasMany('App\UserGroupContribution');
+    }
 }

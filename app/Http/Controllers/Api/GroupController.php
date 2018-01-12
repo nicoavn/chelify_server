@@ -153,16 +153,23 @@ class GroupController extends Controller
         return response()
             ->json($response);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    
+    public function contributions($groupId)
     {
-        //
+        $response = [
+            'ok' => 1
+        ];
+        
+        try {
+            $group = Group::findOrFail($groupId);
+            $response['contributions'] = $group->contributions;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        
+        return response()
+            ->json($response);
     }
 
     /**
