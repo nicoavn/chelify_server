@@ -52,7 +52,7 @@ Route::group([
 
     Route::post('/', 'TransactionController@store')->name('transaction.store');
     Route::put('/{transactionId}', 'TransactionController@update')->name('transaction.update');
-    Route::delete('/{transactionId}', 'TransactionController@delete')->name('transaction.delete');
+    Route::delete('/{transactionId}', 'TransactionController@destroy')->name('transaction.delete');
 
 });
 

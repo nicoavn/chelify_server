@@ -135,8 +135,11 @@ class TransactionController extends Controller
         ];
         try {
             $account = Account::findOrFail($accountId);
-            $account->load(['transactions', 'transactions.category', 'transactions.financialInstrument', 'transactions.place']);
-            $response['transactions'] = $account->transactions;
+            $account->load(['transactions']); // , 'transactions.category', 'transactions.financialInstrument', 'transactions.place'
+            $response['transactions'] = $account->transactions()
+                ->with(['category', 'financialInstrument', 'place'])
+                ->orderByDesc('created_at')
+                ->get();
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
