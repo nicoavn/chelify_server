@@ -51,6 +51,8 @@ Route::group([
     Route::get('/month-summary/{accountId}', 'TransactionController@monthSummary')->name('transaction.month-summary');
 
     Route::post('/', 'TransactionController@store')->name('transaction.store');
+    Route::put('/{transactionId}', 'TransactionController@update')->name('transaction.update');
+    Route::delete('/{transactionId}', 'TransactionController@delete')->name('transaction.delete');
 
 });
 

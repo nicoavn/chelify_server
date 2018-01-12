@@ -49,10 +49,11 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $title = $request->get('title', '');
+        $description = $request->get('description', '');
         $amount = $request->get('amount', 0.0);
         $financialInstrumentId = $request->get('financial_instrument_id');
         $transactionCategoryId = $request->get('transaction_category_id');
-        $googlePlaceId = $request->get('google_place_id');
+        $googlePlaceId = $request->get('google_place_id', null);
 
         try {
             $financialInstrument = FinancialInstrument::findOrFail($financialInstrumentId);
@@ -66,7 +67,7 @@ class TransactionController extends Controller
 
         $place = Place::where('google_place_id', $googlePlaceId)->first();
 
-        if ($place == null) {
+        if ($place == null && $googlePlaceId != null) {
             $placeInfo = $this->getGooglePlaceInfoFromService($googlePlaceId);
             $place = new Place;
             $place->google_place_id = $googlePlaceId;
@@ -78,6 +79,7 @@ class TransactionController extends Controller
 
         $transaction = new Transaction;
         $transaction->title = $title;
+        $transaction->description = $description;
         $transaction->amount = doubleval($amount);
 
         $transaction->financialInstrument()
@@ -178,17 +180,6 @@ class TransactionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -197,7 +188,59 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $transaction = Transaction::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        $title = $request->get('title', '');
+        $description = $request->get('description', '');
+        $amount = $request->get('amount', 0.0);
+        $financialInstrumentId = $request->get('financial_instrument_id');
+        $transactionCategoryId = $request->get('transaction_category_id');
+        $googlePlaceId = $request->get('google_place_id', null);
+
+        $financialInstrument = FinancialInstrument::find($financialInstrumentId);
+        $transactionCategory = TransactionCategory::find($transactionCategoryId);
+    
+        $place = Place::where('google_place_id', $googlePlaceId)->first();
+
+        if ($place == null && $googlePlaceId != null) {
+            $placeInfo = $this->getGooglePlaceInfoFromService($googlePlaceId);
+            $place = new Place;
+            $place->google_place_id = $googlePlaceId;
+            $place->name = $placeInfo['result']['name'];
+            $place->lat = $placeInfo['result']['geometry']['location']['lat'];
+            $place->lon = $placeInfo['result']['geometry']['location']['lng'];
+            $place->save();
+        }
+        
+        $transaction->title = $title;
+        $transaction->description = $description;
+        $transaction->amount = doubleval($amount);
+
+        if($financialInstrument != null)
+            $transaction->financialInstrument()
+                ->associate($financialInstrument);
+
+        if($transactionCategory != null)
+            $transaction->category()
+                ->associate($transactionCategory);
+
+        if($place != null)
+            $transaction->place()
+                ->associate($place);
+
+        $transaction->save();
+
+        return response()->json([
+            'ok' => 1,
+            'transaction' => $transaction
+        ]);
     }
 
     /**
@@ -208,7 +251,20 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $transaction = Transaction::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+        
+        $transaction->delete();
+        
+        return response()->json([
+            'ok' => 1
+        ]);
     }
 
     protected function getGooglePlaceInfoFromService($googlePlaceId)
