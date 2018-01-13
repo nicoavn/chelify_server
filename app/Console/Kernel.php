@@ -9,6 +9,7 @@ use App\TransactionCategory;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -29,6 +30,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        Log::info('Starting the schedule!');
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->call(function () {
@@ -36,6 +38,7 @@ class Kernel extends ConsoleKernel
             $now = Carbon::now();
             $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
             foreach($recurrentTransactions as $rt) {
+                Log::info('Running recurrent transaction: ' . $rt->title);
 
                 $financialInstrument = FinancialInstrument::find($rt->charge_to);
                 $transactionCategory = TransactionCategory::find('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY);
@@ -49,10 +52,11 @@ class Kernel extends ConsoleKernel
                 $transaction->category()
                     ->associate($transactionCategory);
 
+                Log::info('Charging: ' . $rt->amount . ' to ' . $financialInstrument->identifier);
                 $transaction->save();
             }
 
-        })->dailyAt("00:21");
+        })->dailyAt("11:35");
     }
 
     /**
