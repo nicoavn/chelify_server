@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
 //            DB::table('recent_users')->delete();
             $now = Carbon::now();
             $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
+            Log::info('Recurrent Transactions: ' . $recurrentTransactions->count());
             foreach($recurrentTransactions as $rt) {
                 Log::info('Running recurrent transaction: ' . $rt->title);
 
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
             }
 
         })->dailyAt("00:10");
+        Log::info('Ending the schedule!');
     }
 
     /**
