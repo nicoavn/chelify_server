@@ -59,7 +59,7 @@ class Kernel extends ConsoleKernel
             }
         })->everyMinute();
         //})->dailyAt("00:30");
-        
+
         Log::info('Ending the schedule!');
     }
 
