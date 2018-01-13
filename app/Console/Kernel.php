@@ -56,7 +56,7 @@ class Kernel extends ConsoleKernel
                 $transaction->save();
             }
 
-        })->dailyAt("11:35");
+        })->dailyAt("00:10");
     }
 
     /**
