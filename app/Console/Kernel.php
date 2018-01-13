@@ -58,7 +58,9 @@ class Kernel extends ConsoleKernel
                 $transaction->save();
             }
 
-        })->dailyAt("00:10");
+        })->everyMinute();
+        //})->dailyAt("00:30");
+
         Log::info('Ending the schedule!');
     }
 
