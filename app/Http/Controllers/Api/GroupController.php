@@ -79,7 +79,7 @@ class GroupController extends Controller
         try {
             $user = User::find($data['user_id'])->first();
             $group = Group::find($data['group_id'])->first();
-            addMember($group, $user);
+            $this->attachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -97,7 +97,7 @@ class GroupController extends Controller
         try {
             $user = User::where('email', $data['email'])->first();
             $group = Group::find($data['group_id'])->first();
-            addMember($group, $user);
+            $this->attachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -106,7 +106,7 @@ class GroupController extends Controller
         return response()->json($response);
     }
     
-    private function addMember($group, $user)
+    private function attachMember($group, $user)
     {
         $dt = new DateTime;
         $group->users()
