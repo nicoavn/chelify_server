@@ -51,7 +51,6 @@ class Kernel extends ConsoleKernel
                     ->associate($transactionCategory);
 
                 Log::info('Charging: ' . $rt->amount . ' to ' . $financialInstrument->identifier);
-                Log::info('Category: ' . $transactionCategory->name);
                 $transaction->save();
             }
         })->dailyAt("14:00");
