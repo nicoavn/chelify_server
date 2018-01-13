@@ -34,13 +34,13 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Log::info('Call schedule!');
             $now = Carbon::now();
-            $recurrentTransactions = RecurrentTransaction::where('day_of_month', '=', $now->day)->get();
+            $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
             Log::info('Recurrent Transactions: ' . $recurrentTransactions->count());
             foreach($recurrentTransactions as $rt) {
                 Log::info('Running recurrent transaction: ' . $rt->title);
 
                 $financialInstrument = FinancialInstrument::find($rt->charge_to);
-                $transactionCategory = TransactionCategory::find('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY);
+                $transactionCategory = TransactionCategory::where('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY)->first();
 
                 $transaction = new Transaction;
                 $transaction->title = $rt->title;
