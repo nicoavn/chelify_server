@@ -35,4 +35,10 @@ class Group extends Model
     {
         return $this->hasMany('App\UserGroupContribution');
     }
+
+    public function updateCurrentAmount()
+    {
+        $this->current_amount = $this->contributions->sum('amount');
+        $this->save();
+    }
 }
