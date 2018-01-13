@@ -113,9 +113,11 @@ Route::group([
     'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'ReportController@index')->name('report.list');
+    Route::get('/{reportId}/build', 'ReportController@buildById')->name('report.build-by-id');
     Route::get('/build', 'ReportController@build')->name('report.build');
     Route::get('/{reportId}', 'ReportController@show')->name('report.show');
     Route::get('/by-account/{accountId}', 'ReportController@showByAccount');
+    Route::post('/', 'ReportController@store')->name('report.store');
 });
 
 //
