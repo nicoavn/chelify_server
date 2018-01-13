@@ -79,14 +79,38 @@ class GroupController extends Controller
         try {
             $user = User::find($data['user_id'])->first();
             $group = Group::find($data['group_id'])->first();
-            $dt = new DateTime;
-            $group->users()->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
+            addMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
         }
 
         return response()->json($response);
+    }
+    
+    public function addMemberByEmail(Request $request)
+    {
+        $response = ['ok' => 1];
+
+        $data = $request->all();
+
+        try {
+            $user = User::where('email', $data['email'])->first();
+            $group = Group::find($data['group_id'])->first();
+            addMember($group, $user);
+        } catch (Exception $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+
+        return response()->json($response);
+    }
+    
+    private function addMember($group, $user)
+    {
+        $dt = new DateTime;
+        $group->users()
+            ->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
     }
 
     public function addContribution(Request $request)
