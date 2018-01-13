@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\RecurrentTransaction;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +16,7 @@ class RecurrentTransactionController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json(RecurrentTransaction::with('chargeTo')->get());
     }
 
     /**
@@ -63,18 +64,19 @@ class RecurrentTransactionController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $recurrentTransaction = RecurrentTransaction::findOrFail($id);
+            $recurrentTransaction->load('chargeTo');
+            $response['recurrent_transaction'] = $recurrentTransaction;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
     }
 
     /**
@@ -97,6 +99,19 @@ class RecurrentTransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $recurrentTransaction = RecurrentTransaction::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+
+        $recurrentTransaction->delete();
+
+        return response()->json([
+            'ok' => 1
+        ]);
     }
 }

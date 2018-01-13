@@ -67,13 +67,12 @@ Route::group([
     'namespace' => 'Api'
 ], function ($router) {
     Route::get('/', 'RecurrentTransactionController@index')->name('recurrent-transaction.list');
-    Route::get('/{transactionId}', 'RecurrentTransactionController@show')->name('recurrent-transaction.show');
+    Route::get('/{recurrentTransactionId}', 'RecurrentTransactionController@show')->name('recurrent-transaction.show');
     Route::get('/by-account/{accountId}', 'RecurrentTransactionController@showByAccount')->name('recurrent-transaction.by-account');
 
     Route::post('/', 'RecurrentTransactionController@store')->name('recurrent-transaction.store');
-    Route::put('/{transactionId}', 'RecurrentTransactionController@update')->name('recurrent-transaction.update');
-    Route::delete('/{transactionId}', 'RecurrentTransactionController@destroy')->name('recurrent-transaction.delete');
-
+    Route::put('/{recurrentTransactionId}', 'RecurrentTransactionController@update')->name('recurrent-transaction.update');
+    Route::delete('/{recurrentTransactionId}', 'RecurrentTransactionController@destroy')->name('recurrent-transaction.delete');
 });
 
 //

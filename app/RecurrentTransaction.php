@@ -18,4 +18,8 @@ class RecurrentTransaction extends Model
      */
     protected $dates = ['deleted_at'];
 
+    public function chargeTo()
+    {
+        return $this->belongsTo('App\FinancialInstrument', 'charge_to');
+    }
 }
