@@ -31,13 +31,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         Log::info('Starting the schedule!');
-        // $schedule->command('inspire')
-        //          ->hourly();
         $schedule->call(function () {
             Log::info('Call schedule!');
-//            DB::table('recent_users')->delete();
             $now = Carbon::now();
-            $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
+            $recurrentTransactions = RecurrentTransaction::where('day_of_month', '=', $now->day)->get();
             Log::info('Recurrent Transactions: ' . $recurrentTransactions->count());
             foreach($recurrentTransactions as $rt) {
                 Log::info('Running recurrent transaction: ' . $rt->title);
@@ -57,8 +54,8 @@ class Kernel extends ConsoleKernel
                 Log::info('Charging: ' . $rt->amount . ' to ' . $financialInstrument->identifier);
                 $transaction->save();
             }
-//        })->everyMinute();
-        })->dailyAt("00:30");
+        })->everyMinute();
+        //})->dailyAt("00:30");
 
         Log::info('Ending the schedule!');
     }
