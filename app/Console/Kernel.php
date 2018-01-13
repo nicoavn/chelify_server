@@ -57,8 +57,8 @@ class Kernel extends ConsoleKernel
                 Log::info('Charging: ' . $rt->amount . ' to ' . $financialInstrument->identifier);
                 $transaction->save();
             }
-        })->everyMinute();
-        //})->dailyAt("00:30");
+//        })->everyMinute();
+        })->dailyAt("00:30");
 
         Log::info('Ending the schedule!');
     }
