@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\TransactionCategory;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class TransactionCategoryController extends Controller
@@ -24,19 +25,11 @@ class TransactionCategoryController extends Controller
      */
     public function index()
     {
-        return response()->json(
-            TransactionCategory::all()
-        );
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $transactionCategories = TransactionCategory::all();
+        return response()->json([
+            'ok' => 1,
+            'transaction_categories' => $transactionCategories
+        ]);
     }
 
     /**
@@ -58,20 +51,18 @@ class TransactionCategoryController extends Controller
      */
     public function show($id)
     {
-        return response()->json(
-            TransactionCategory::find($id)
-        );
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $transactionCategory = TransactionCategory::findOrFail($id);
+            $response['transaction_category'] = $transactionCategory;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
     }
 
     /**

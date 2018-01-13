@@ -35,16 +35,6 @@ class GroupController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -67,6 +57,17 @@ class GroupController extends Controller
             ->associate($account)
             ->save();
 
+        if (!empty($data['members_emails']))
+        {
+            $emails = $data['members_emails'];
+            foreach($emails as $email)
+            {
+                $user = User::where('email', $email);
+                if($user != null)
+                    $this->attachMember($group, $user);
+            }
+        }
+
         return $group;
     }
 
@@ -87,7 +88,7 @@ class GroupController extends Controller
 
         return response()->json($response);
     }
-    
+
     public function addMemberByEmail(Request $request)
     {
         $response = ['ok' => 1];
@@ -111,6 +112,30 @@ class GroupController extends Controller
         $dt = new DateTime;
         $group->users()
             ->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
+    }
+
+    public function removeMember(Request $request)
+    {
+        $response = ['ok' => 1];
+
+        $data = $request->all();
+
+        try {
+            $user = User::find($data['user_id'])->first();
+            $group = Group::find($data['group_id'])->first();
+            $this->detachMember($group, $user);
+        } catch (Exception $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+
+        return response()->json($response);
+    }
+
+    private function detachMember($group, $user)
+    {
+        $group->users()
+            ->detach($user);
     }
 
     public function addContribution(Request $request)

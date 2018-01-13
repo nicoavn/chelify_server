@@ -29,16 +29,6 @@ class ReportController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
@@ -95,6 +85,8 @@ class ReportController extends Controller
             'ok' => 1
         ];
 
+        $report = new Report;
+
         try {
             $account = Account::findOrFail($request->get('account_id', 'null'));
         } catch (ModelNotFoundException $e) {
@@ -118,45 +110,17 @@ class ReportController extends Controller
         if (!empty($parameters['group_by']))
             $groupBy = $parameters['group_by'];
 
-        $query = DB::table('transactions AS t')
-            ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
-            ->where('fi.account_id', "=", $account->id);
+        $report->account()
+            ->associate($account);
 
-        $result = null;
+        $report->transactionCategoryType()
+            ->associate($transactionCategoryType);
 
-        if (!empty($startDate) && !empty($endDate))
-            $query->whereBetween('t.created_at', [$startDate, $endDate]);
+        $report->from_date = $startDate;
+        $report->to_date = $endDate;
+        $report->group_by = $groupBy;
 
-        if ($transactionCategoryType != null) {
-            $query->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
-                ->join('transaction_category_types AS tct', 'tc.transaction_category_type_id', '=', 'tct.id');
-            $query->where('tc.transaction_category_type_id', '=', $transactionCategoryType->id);
-            $result = $query->select(DB::raw('tct.name'), DB::raw('SUM(t.amount) AS total'));
-        } else {
-            switch ($groupBy) {
-                case self::GROUP_BY_CATEGORIES:
-                    $query->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id');
-                    $query->groupBy('t.transaction_category_id');
-                    $result = $query->select(DB::raw('tc.name'), DB::raw('SUM(t.amount) AS total'));
-                    break;
-                case self::GROUP_BY_FINANCIAL_INSTRUMENTS:
-                    $query->groupBy('t.financial_instrument_id');
-                    $query->join('financial_instrument_types AS fit', 'fi.financial_instrument_type_id', '=', 'fit.id');
-                    $result = $query->select(DB::raw('fi.identifier'), DB::raw('SUM(t.amount) AS total'), DB::raw('fit.name AS type'));
-                    break;
-                case self::GROUP_BY_MONTH:
-                    $query->groupBy(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-01")'));
-                    $result = $query->select(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-01") AS month'), DB::raw('SUM(t.amount) AS total'));
-                    break;
-                case self::GROUP_BY_PLACES:
-                    $query->leftJoin('places AS p', 't.place_id', '=', 'p.id');
-                    $query->groupBy('t.place_id');
-                    $result = $query->select(DB::raw('IF(p.name IS NULL, "", p.name) AS place'), DB::raw('SUM(t.amount) AS total'));
-                    break;
-            }
-        }
-
-        $response['result'] = $result->get();
+        $response['result'] = $this->runReport($report);
         return response()
             ->json($response);
     }
@@ -179,12 +143,20 @@ class ReportController extends Controller
         }
 
         try {
-            $account = Account::findOrFail($report->account_id);
-        } catch (ModelNotFoundException $e) {
+            $response['result'] = $this->runReport($report);
+        } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
             return response()->json($response);
         }
+
+        return response()
+            ->json($response);
+    }
+
+    public function runReport(Report $report)
+    {
+        $account = Account::findOrFail($report->account_id);
 
         $transactionCategoryType = null;
         if (!empty($report->transaction_category_type_id))
@@ -198,8 +170,8 @@ class ReportController extends Controller
         }
 
         $groupBy = null;
-        if (!empty($parameters['group_by']))
-            $groupBy = $parameters['group_by'];
+        if (!empty($report->group_by))
+            $groupBy = $report->group_by;
 
         $query = DB::table('transactions AS t')
             ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
@@ -239,9 +211,7 @@ class ReportController extends Controller
             }
         }
 
-        $response['result'] = $result->get();
-        return response()
-            ->json($response);
+        return $result->get();
     }
 
     /**
