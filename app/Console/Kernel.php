@@ -40,18 +40,19 @@ class Kernel extends ConsoleKernel
                 Log::info('Running recurrent transaction: ' . $rt->title);
 
                 $financialInstrument = FinancialInstrument::find($rt->charge_to);
-                $transactionCategory = TransactionCategory::where('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY)->first();
+                $transactionCategory = TransactionCategory::where('icon', RecurrentTransaction::RECURRENT_TRANSACTION_CATEGORY)
+                    ->first();
 
                 $transaction = new Transaction;
                 $transaction->title = $rt->title;
                 $transaction->amount = $rt->amount;
                 $transaction->financialInstrument()
                     ->associate($financialInstrument);
-
                 $transaction->category()
                     ->associate($transactionCategory);
 
                 Log::info('Charging: ' . $rt->amount . ' to ' . $financialInstrument->identifier);
+                Log::info('Category: ' . $transactionCategory->name);
                 $transaction->save();
             }
         })->everyMinute();
