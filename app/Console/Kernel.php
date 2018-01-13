@@ -32,7 +32,6 @@ class Kernel extends ConsoleKernel
     {
         Log::info('Starting the schedule!');
         $schedule->call(function () {
-            Log::info('Call schedule!');
             $now = Carbon::now();
             $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
             Log::info('Recurrent Transactions: ' . $recurrentTransactions->count());
@@ -55,8 +54,7 @@ class Kernel extends ConsoleKernel
                 Log::info('Category: ' . $transactionCategory->name);
                 $transaction->save();
             }
-//        })->everyMinute();
-        })->dailyAt("01:22");
+        })->dailyAt("14:00");
 
         Log::info('Ending the schedule!');
     }
