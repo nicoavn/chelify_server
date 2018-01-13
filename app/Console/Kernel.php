@@ -34,6 +34,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
         $schedule->call(function () {
+            Log::info('Call schedule!');
 //            DB::table('recent_users')->delete();
             $now = Carbon::now();
             $recurrentTransactions = RecurrentTransaction::where('day_of_month', $now->day)->get();
