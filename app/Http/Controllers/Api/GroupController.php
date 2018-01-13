@@ -106,6 +106,7 @@ class GroupController extends Controller
                 ->associate($group);
             $userGroupContribution->amount = $contribution;
             $userGroupContribution->save();
+            $group->updateCurrentAmount();
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
