@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Account;
 use App\RecurrentTransaction;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -61,6 +62,31 @@ class RecurrentTransactionController extends Controller
             $recurrentTransaction = RecurrentTransaction::findOrFail($id);
             $recurrentTransaction->load('chargeTo');
             $response['recurrent_transaction'] = $recurrentTransaction;
+        } catch (ModelNotFoundException $e) {
+            $response['ok'] = 0;
+            $response['error'] = $e->getMessage();
+        }
+        return response()
+            ->json($response);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $accountId
+     * @return \Illuminate\Http\Response
+     */
+    public function showByAccount($accountId)
+    {
+        $response = [
+            'ok' => 1
+        ];
+        try {
+            $account = Account::findOrFail($accountId);
+
+            $recurrentTransactions = RecurrentTransaction::where('account_id', $account->id);
+
+            $response['recurrent_transactions'] = $recurrentTransactions;
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
