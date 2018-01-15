@@ -21,7 +21,6 @@ class CreateGroupUserTable extends Migration
             $table->foreign('group_id')->references('id')->on('groups');
 
             $table->nullableTimestamps();
-            $table->softDeletes();
         });
     }
 

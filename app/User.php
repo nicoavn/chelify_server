@@ -65,13 +65,20 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany('App\UserGroupContributions');
     }
 
-    public function profileImage()
+//    public function profileImage()
+//    {
+//        $image = $this->account->images()
+//            ->where('image_type_id', 1)
+//            ->orderByDesc('id')
+//            ->first();
+//        return $image;
+//    }
+
+    public function profileImages()
     {
-        $image = $this->account->images()
-            ->where('image_type_id', 1)
-            ->orderByDesc('id')
-            ->first();
-        return $image;
+        return $this->account
+            ->images()
+            ->where('image_type_id', 1);
     }
 
     /**
