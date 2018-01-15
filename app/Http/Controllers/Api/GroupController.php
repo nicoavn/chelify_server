@@ -128,6 +128,7 @@ class GroupController extends Controller
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
+            $response['data'] = \GuzzleHttp\json_encode($data);
         }
 
         return response()->json($response);
@@ -243,6 +244,19 @@ class GroupController extends Controller
      */
     public function destroy($id)
     {
+        try {
+            $group = Group::findOrFail($id);
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'ok' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
 
+        $group->delete();
+
+        return response()->json([
+            'ok' => 1
+        ]);
     }
 }
