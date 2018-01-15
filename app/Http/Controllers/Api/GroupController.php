@@ -133,10 +133,11 @@ class GroupController extends Controller
         return response()->json($response);
     }
 
-    private function detachMember($group, $user)
+    private function detachMember(Group $group, User $user)
     {
         $group->users()
             ->detach($user);
+        $group->save();
     }
 
     public function addContribution(Request $request)
