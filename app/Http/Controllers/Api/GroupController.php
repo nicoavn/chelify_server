@@ -122,9 +122,9 @@ class GroupController extends Controller
         $data = $request->all();
 
         try {
-            $user = User::find($data['user_id'])->first();
-            $group = Group::find($data['group_id'])->first();
-            $this->detachMember($group, $user);
+            //$user = User::find($data['user_id'])->first();
+            //$group = Group::find($data['group_id'])->first();
+            //$this->detachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
