@@ -136,8 +136,7 @@ class GroupController extends Controller
     private function detachMember(Group $group, User $user)
     {
         $group->users()
-            ->detach($user);
-        $group->save();
+            ->detach($user->id);
     }
 
     public function addContribution(Request $request)
