@@ -79,8 +79,8 @@ class GroupController extends Controller
         $data = $request->all();
 
         try {
-            $user = User::find($data['user_id'])->first();
-            $group = Group::find($data['group_id'])->first();
+            $user = User::find($data['user_id']);
+            $group = Group::find($data['group_id']);
             $this->attachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
@@ -97,8 +97,8 @@ class GroupController extends Controller
         $data = $request->all();
 
         try {
-            $user = User::where('email', $data['email'])->first();
-            $group = Group::find($data['group_id'])->first();
+            $user = User::where('email', $data['email']);
+            $group = Group::find($data['group_id']);
             $this->attachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
@@ -122,8 +122,8 @@ class GroupController extends Controller
         $data = $request->all();
 
         try {
-            $user = User::find($data['user_id'])->first();
-            $group = Group::find($data['group_id'])->first();
+            $user = User::find($data['user_id']);
+            $group = Group::find($data['group_id']);
             $this->detachMember($group, $user);
         } catch (Exception $e) {
             $response['ok'] = 0;
