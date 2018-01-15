@@ -51,6 +51,7 @@ class GroupController extends Controller
         $group = Group::make([
             'title' => $data['title'],
             'manager_id' => $data['manager_id'],
+            'target_amount' => $data['target_amount'],
         ]);
 
         $group->account()
