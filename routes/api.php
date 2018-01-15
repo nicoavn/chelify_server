@@ -32,7 +32,7 @@ Route::group([
     Route::get('/{groupId}', 'GroupController@show')->name('group.show');
     Route::post('/add-member', 'GroupController@addMember')->name('group.add-member');
     Route::post('/add-member-by-email', 'GroupController@addMemberByEmail')->name('group.add-member-by-email');
-    Route::delete('/remove-member', 'GroupController@removeMember')->name('group.remove-member');
+    Route::post('/remove-member', 'GroupController@removeMember')->name('group.remove-member');
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
     Route::post('/add-contribution', 'GroupController@addContribution');
     Route::get('/{groupId}/contributions', 'GroupController@contributions')->name('group.contributions');
