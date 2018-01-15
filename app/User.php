@@ -78,7 +78,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->account
             ->images()
-            ->where('image_type_id', 1);
+            ->where('image_type_id', 1)
+            ->orderByDesc('id');
     }
 
     /**
