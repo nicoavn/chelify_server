@@ -172,6 +172,7 @@ class TransactionController extends Controller
             ->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
             ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
             ->where('fi.account_id', "=", $account->id)
+            ->whereNull('t.deleted_at')
             ->whereBetween('t.created_at', [$startDate, $endDate]);
 
         if($category != null)
