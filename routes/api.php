@@ -37,6 +37,7 @@ Route::group([
     Route::get('/by-user/{userId}', 'GroupController@showByUser');
     Route::post('/add-contribution', 'GroupController@addContribution');
     Route::get('/{groupId}/contributions', 'GroupController@contributions')->name('group.contributions');
+    Route::delete('/{groupId}', 'GroupController@destroy')->name('group.delete');
 });
 
 //
