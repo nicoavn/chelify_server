@@ -48,9 +48,20 @@ class GroupController extends Controller
         $account->type()->associate(AccountType::find('2'));
         $account->save();
 
+        try {
+            $managerAccount = Account::find($data['manager_id']);
+            $managerUser = User::where('account_id', $managerAccount->id);
+        } catch (ModelNotFoundException $e) {
+            return response()
+                ->json([
+                    'ok' => 0,
+                    'error' => $e->getMessage()
+                ]);
+        }
+
         $group = Group::make([
             'title' => $data['title'],
-            'manager_id' => $data['manager_id'],
+            'manager_id' => $managerAccount->id,
             'target_amount' => $data['target_amount'],
         ]);
 
@@ -61,12 +72,17 @@ class GroupController extends Controller
         if (!empty($data['members_emails']))
         {
             $emails = $data['members_emails'];
+            $users = [];
             foreach($emails as $email)
             {
                 $user = User::where('email', $email);
                 if($user != null)
-                    $this->attachMember($group, $user);
+                    $users[] = $user->id;
             }
+
+            $users[] = $managerUser->id;
+
+            $this->attachMembers($group, $users);
         }
 
         return $group;
@@ -81,7 +97,7 @@ class GroupController extends Controller
         try {
             $user = User::find($data['user_id']);
             $group = Group::find($data['group_id']);
-            $this->attachMember($group, $user);
+            $this->attachMembers($group, [$user->id]);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -99,7 +115,7 @@ class GroupController extends Controller
         try {
             $user = User::where('email', $data['email']);
             $group = Group::find($data['group_id']);
-            $this->attachMember($group, $user);
+            $this->attachMembers($group, [$user->id]);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -108,11 +124,11 @@ class GroupController extends Controller
         return response()->json($response);
     }
     
-    private function attachMember($group, $user)
+    private function attachMembers($group, array $users)
     {
         $dt = new DateTime;
         $group->users()
-            ->attach($user, ['created_at' => $dt->format('Y-m-d H:i:s')]);
+            ->attach($users, ['created_at' => $dt->format('Y-m-d H:i:s')]);
     }
 
     public function removeMember(Request $request)
@@ -124,7 +140,7 @@ class GroupController extends Controller
         try {
             $user = User::find($data['user_id']);
             $group = Group::find($data['group_id']);
-            $this->detachMember($group, $user);
+            $this->detachMembers($group, [$user->id]);
         } catch (Exception $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -133,10 +149,10 @@ class GroupController extends Controller
         return response()->json($response);
     }
 
-    private function detachMember(Group $group, User $user)
+    private function detachMembers(Group $group, User $users)
     {
         $group->users()
-            ->detach($user->id);
+            ->detach($users);
     }
 
     public function addContribution(Request $request)
@@ -196,7 +212,12 @@ class GroupController extends Controller
 
         try {
             $user = User::findOrFail($userId);
-            $response['groups'] = $user->groups;
+
+            $groups = $user->groups;
+//            $managedGroups = Group::where('manager_id', $user->account->id);
+//            $groups->merge($managedGroups);
+
+            $response['groups'] = $groups;
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
@@ -247,6 +268,7 @@ class GroupController extends Controller
     {
         try {
             $group = Group::findOrFail($id);
+            // $group->users()->detach();
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'ok' => 0,
