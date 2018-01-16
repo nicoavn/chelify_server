@@ -54,9 +54,10 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         //$user->load(['account.images']);
-        $user->profile = $user->profileImages()->first() != null ?
-            $user->profileImages()->first()->file_name :
-            null;
+//        $user->profile = $user->profileImages()->first() != null ?
+//            $user->profileImages()->first()->file_name :
+//            null;
+        $user->load('profileImages');
         return response()->json($user);
     }
 
