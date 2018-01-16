@@ -69,28 +69,28 @@ class GroupController extends Controller
             ->associate($account)
             ->save();
 
+        $users = [];
         if (!empty($data['members_emails']))
         {
             $emails = $data['members_emails'];
-            $users = [];
             foreach($emails as $email)
             {
                 $user = User::where('email', $email)->first();
                 if($user != null)
                     $users[] = $user->id;
             }
+        }
 
-            $users[] = $managerUser->id;
+        $users[] = $managerUser->id;
 
-            try {
-                $this->attachMembers($group, $users);
-            } catch (Exception $e) {
-                return response()
-                    ->json([
-                        'ok' => 0,
-                        'error' => $e->getMessage()
-                    ]);
-            }
+        try {
+            $this->attachMembers($group, $users);
+        } catch (Exception $e) {
+            return response()
+                ->json([
+                    'ok' => 0,
+                    'error' => $e->getMessage()
+                ]);
         }
 
         return $group;
