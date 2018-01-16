@@ -85,8 +85,11 @@ class GroupController extends Controller
             try {
                 $this->attachMembers($group, $users);
             } catch (Exception $e) {
-                $response['ok'] = 0;
-                $response['error'] = $e->getMessage();
+                return response()
+                    ->json([
+                        'ok' => 0,
+                        'error' => $e->getMessage()
+                    ]);
             }
         }
 
