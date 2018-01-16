@@ -59,11 +59,11 @@ class GroupController extends Controller
                 ]);
         }
 
-        $group = Group::make([
-            'title' => $data['title'],
-            'manager_id' => $managerAccount->id,
-            'target_amount' => $data['target_amount'],
-        ]);
+        $group = Group::make();
+
+        $group->title = $data['title'];
+        $group->manager_id = $managerAccount->id;
+        $group->target_amount = $data['target_amount'];
 
         $group->account()
             ->associate($account)
