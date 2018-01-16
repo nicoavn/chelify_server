@@ -82,7 +82,12 @@ class GroupController extends Controller
 
             $users[] = $managerUser->id;
 
-            $this->attachMembers($group, $users);
+            try {
+                $this->attachMembers($group, $users);
+            } catch (Exception $e) {
+                $response['ok'] = 0;
+                $response['error'] = $e->getMessage();
+            }
         }
 
         return $group;
