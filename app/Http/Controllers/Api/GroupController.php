@@ -213,6 +213,8 @@ class GroupController extends Controller
         
         try {
             $group = Group::findOrFail($groupId);
+            $group->load('contributions.user');
+            $group->load('contributions.user.profileImages');
             $response['contributions'] = $group->contributions;
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
