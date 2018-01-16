@@ -50,7 +50,7 @@ class GroupController extends Controller
 
         try {
             $managerAccount = Account::find($data['manager_id']);
-            $managerUser = User::where('account_id', $managerAccount->id);
+            $managerUser = User::where('account_id', $managerAccount->id)->first();
         } catch (ModelNotFoundException $e) {
             return response()
                 ->json([
@@ -75,7 +75,7 @@ class GroupController extends Controller
             $users = [];
             foreach($emails as $email)
             {
-                $user = User::where('email', $email);
+                $user = User::where('email', $email)->first();
                 if($user != null)
                     $users[] = $user->id;
             }
