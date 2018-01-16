@@ -30,6 +30,7 @@ Route::group([
 ], function ($router) {
     Route::get('/', 'GroupController@index')->name('group.list');
     Route::get('/{groupId}', 'GroupController@show')->name('group.show');
+    Route::post('/', 'GroupController@store')->name('group.store');
     Route::post('/add-member', 'GroupController@addMember')->name('group.add-member');
     Route::post('/add-member-by-email', 'GroupController@addMemberByEmail')->name('group.add-member-by-email');
     Route::post('/remove-member', 'GroupController@removeMember')->name('group.remove-member');
