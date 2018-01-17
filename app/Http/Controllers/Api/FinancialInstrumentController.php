@@ -31,18 +31,17 @@ class FinancialInstrumentController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $identifier = $request->get('identifier', null);
-        $alias = $request->get('alias', null);
-        $balance = $request->get('balance', null);
+        $identifier = $request->get('identifier', '');
+        $alias = $request->get('alias', '');
+        $balance = $request->get('balance', 0);
         $accountId = $request->get('account_id', null);
         $financialEntityId = $request->get('financial_entity_id', null);
         $financialInstrumentTypeId = $request->get('financial_instrument_type_id', null);
 
         // Card Data
 
-        $provider = $data['provider'];
-        $cardIdentifier = $data['card_identifier'];
+        $provider = $request->get('provider', null);
+        $cardIdentifier = $request->get('card_identifier', null);
 
         $response = [
             'ok' => 1
@@ -53,6 +52,8 @@ class FinancialInstrumentController extends Controller
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
+            return response()
+                ->json($response);
         }
 
         $financialEntity = FinancialEntity::find($financialEntityId);
@@ -73,12 +74,16 @@ class FinancialInstrumentController extends Controller
             ->associate($financialInstrumentType);
         $financialInstrument->save();
 
-        $card = new Card;
-        $card->provider = $provider;
-        $card->identifier = $cardIdentifier;
-        $card->financialInstrument()
-            ->associate($financialInstrument);
-        $card->save();
+        if (!empty($provider) && !empty($cardIdentifier)){
+            $card = new Card;
+            $card->provider = $provider;
+            $card->identifier = $cardIdentifier;
+            $card->financialInstrument()
+                ->associate($financialInstrument);
+            $card->save();
+        }
+
+        $response['financial_instrument'] = $financialInstrument;
 
         return response()
             ->json($response);

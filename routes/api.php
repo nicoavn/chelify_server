@@ -101,10 +101,10 @@ Route::group([
     'prefix' => 'financial-instrument',
     'namespace' => 'Api'
 ], function ($router) {
+    Route::post('/', 'FinancialInstrumentController@store')->name('financial-instrument.store');
     Route::get('/', 'FinancialInstrumentController@index')->name('financial-instrument.list');
     Route::get('/{financialInstrumentId}', 'FinancialInstrumentController@show')->name('financial-instrument.show');
     Route::get('/by-account/{accountId}', 'FinancialInstrumentController@showByAccount')->name('financial-instrument.by-account');
-    Route::post('/', 'FinancialInstrumentController@store')->name('financial-instrument.store');
 });
 
 //
