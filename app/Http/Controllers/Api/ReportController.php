@@ -214,11 +214,7 @@ class ReportController extends Controller
             }
         }
 
-        DB::enableQueryLog();
-        $result->get();
-        //return $result->get();
-        dd(DB::getQueryLog());
-        return  null;
+        return $result->get();
     }
 
     /**
