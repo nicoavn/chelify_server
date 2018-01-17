@@ -190,6 +190,7 @@ class ReportController extends Controller
 
         $result = null;
 
+        dd($startDate->toDateTimeString());
         if (!empty($startDate) && !empty($endDate))
             $query->whereBetween('t.created_at', [$startDate->toDateTimeString(), $endDate->toDateTimeString()]);
 
