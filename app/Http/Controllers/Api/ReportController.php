@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -107,9 +108,9 @@ class ReportController extends Controller
                 $startDate = Carbon::createFromFormat("Y-m-d", $parameters['start_date']);
                 $endDate = Carbon::createFromFormat("Y-m-d", $parameters['end_date']);
             } catch (Exception $e) {
+                Log::info($e->getMessage());
                 $startDate = null;
                 $endDate = null;
-                // ignore
             }
 
         $groupBy = null;
@@ -177,7 +178,6 @@ class ReportController extends Controller
             } catch (Exception $e) {
                 $startDate = null;
                 $endDate = null;
-                // ignore
             }
 
         $groupBy = null;
@@ -190,7 +190,6 @@ class ReportController extends Controller
 
         $result = null;
 
-        dd($startDate->toDateTimeString());
         if (!empty($startDate) && !empty($endDate))
             $query->whereBetween('t.created_at', [$startDate->toDateTimeString(), $endDate->toDateTimeString()]);
 
