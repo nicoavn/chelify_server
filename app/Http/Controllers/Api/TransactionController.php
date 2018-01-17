@@ -148,13 +148,34 @@ class TransactionController extends Controller
             ->json($response);
     }
 
-    public function monthSummary($accountId)
+    public function daySummary($accountId)
     {
         $account = Account::findOrFail($accountId);
 
         $now = Carbon::now();
         $endDate = $now->setTime(23, 59, 59)->toDateTimeString();
         $startDate = $now->subDays(7)->setTime(0, 0)->toDateTimeString();
+
+        $query = DB::table('transactions AS t')
+            ->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
+            ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
+            ->where('fi.account_id', "=", $account->id)
+            ->whereNull('t.deleted_at')
+            ->whereBetween('t.created_at', [$startDate, $endDate])
+            ->orderByDesc('t.created_at');
+
+        $query->groupBy(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-%d")'));
+        return $query->select(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-%d") AS day'), DB::raw('SUM(t.amount) AS total'))
+            ->get();
+    }
+
+    public function monthSummary($accountId)
+    {
+        $account = Account::findOrFail($accountId);
+
+        $now = Carbon::now();
+        $startDate = $now->firstOfMonth()->toDateTimeString();
+        $endDate = $now->lastOfMonth()->toDateTimeString();
 
         return response()->json(self::summary($account, $startDate, $endDate));
     }
@@ -163,26 +184,24 @@ class TransactionController extends Controller
      * @param $account
      * @param $startDate
      * @param $endDate string
+     * @param $category TransactionCategory
      * @return Collection Collection
      */
-    public static function summary($account, $startDate, $endDate)
+    public static function summary($account, $startDate, $endDate, $category = null)
     {
         $query = DB::table('transactions AS t')
             ->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
             ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
             ->where('fi.account_id', "=", $account->id)
-            ->whereNull('t.deleted_at')
+
             ->whereBetween('t.created_at', [$startDate, $endDate]);
 
-//        if($category != null)
-//            $query->where('transaction_category_id', '=', $category->id);
-//        else
-//            $query->groupBy('transaction_category_id');
-        $query->groupBy(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-%d")'));
-        return $query->select(DB::raw('DATE_FORMAT(t.created_at, "%Y-%m-%d") AS day'), DB::raw('SUM(t.amount) AS total'))
-            ->get();
+        if($category != null)
+            $query->where('transaction_category_id', '=', $category->id);
+        else
+            $query->groupBy('transaction_category_id');
 
-//        return $query->select(DB::raw('tc.name'), DB::raw('SUM(t.amount) as total'))->get();
+        return $query->select(DB::raw('tc.name'), DB::raw('SUM(t.amount) as total'))->get();
     }
 
     /**

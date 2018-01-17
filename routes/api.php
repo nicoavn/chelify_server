@@ -53,6 +53,7 @@ Route::group([
     Route::get('/{transactionId}', 'TransactionController@show')->name('transaction.show');
     Route::get('/by-account/{accountId}', 'TransactionController@showByAccount')->name('transaction.by-account');
     Route::get('/month-summary/{accountId}', 'TransactionController@monthSummary')->name('transaction.month-summary');
+    Route::get('/day-summary/{accountId}', 'TransactionController@daySummary')->name('transaction.day-summary');
 
     Route::post('/', 'TransactionController@store')->name('transaction.store');
     Route::put('/{transactionId}', 'TransactionController@update')->name('transaction.update');
