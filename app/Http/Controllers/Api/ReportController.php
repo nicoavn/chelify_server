@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Report;
 use App\TransactionCategoryType;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -101,10 +102,15 @@ class ReportController extends Controller
 
         $startDate = null;
         $endDate = null;
-        if (!empty($parameters['start_date']) && !empty($parameters['end_date'])) {
-            $startDate = Carbon::createFromFormat("Y-m-d", $parameters['start_date']);
-            $endDate = Carbon::createFromFormat("Y-m-d", $parameters['end_date']);
-        }
+        if (!empty($parameters['start_date']) && !empty($parameters['end_date']))
+            try {
+                $startDate = Carbon::createFromFormat("Y-m-d", $parameters['start_date']);
+                $endDate = Carbon::createFromFormat("Y-m-d", $parameters['end_date']);
+            } catch (Exception $e) {
+                $startDate = null;
+                $endDate = null;
+                // ignore
+            }
 
         $groupBy = null;
         if (!empty($parameters['group_by']))
@@ -164,10 +170,15 @@ class ReportController extends Controller
 
         $startDate = null;
         $endDate = null;
-        if (!empty($report->from_date) && !empty($report->to_date)) {
-            $startDate = Carbon::createFromFormat("Y-m-d", $report->from_date);
-            $endDate = Carbon::createFromFormat("Y-m-d", $report->to_date);
-        }
+        if (!empty($report->from_date) && !empty($report->to_date))
+            try {
+                $startDate = Carbon::createFromFormat("Y-m-d", $report->from_date);
+                $endDate = Carbon::createFromFormat("Y-m-d", $report->to_date);
+            } catch (Exception $e) {
+                $startDate = null;
+                $endDate = null;
+                // ignore
+            }
 
         $groupBy = null;
         if (!empty($report->group_by))
