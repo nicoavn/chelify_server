@@ -178,7 +178,8 @@ class ReportController extends Controller
 
         $query = DB::table('transactions AS t')
             ->join('financial_instruments AS fi', 't.financial_instrument_id', '=', 'fi.id')
-            ->where('fi.account_id', "=", $account->id);
+            ->where('fi.account_id', "=", $account->id)
+            ->whereNull('deleted_at');
 
         $result = null;
 
