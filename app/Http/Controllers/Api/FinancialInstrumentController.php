@@ -76,6 +76,8 @@ class FinancialInstrumentController extends Controller
         $card = new Card;
         $card->provider = $provider;
         $card->identifier = $cardIdentifier;
+        $card->financialInstrument()
+            ->associate($financialInstrument);
         $card->save();
 
         return response()
