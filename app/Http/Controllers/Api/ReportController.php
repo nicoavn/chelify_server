@@ -122,8 +122,8 @@ class ReportController extends Controller
         $report->transactionCategoryType()
             ->associate($transactionCategoryType);
 
-        $report->from_date = $startDate;
-        $report->to_date = $endDate;
+        $report->from_date = $startDate->toDateTimeString();
+        $report->to_date = $endDate->toDateTimeString();
         $report->group_by = $groupBy;
 
         $response['result'] = $this->runReport($report);
@@ -191,7 +191,7 @@ class ReportController extends Controller
         $result = null;
 
         if (!empty($startDate) && !empty($endDate))
-            $query->whereBetween('t.created_at', [$startDate, $endDate]);
+            $query->whereBetween('t.created_at', [$startDate->toDateTimeString(), $endDate->toDateTimeString()]);
 
         if ($transactionCategoryType != null) {
             $query->join('transaction_categories AS tc', 't.transaction_category_id', '=', 'tc.id')
