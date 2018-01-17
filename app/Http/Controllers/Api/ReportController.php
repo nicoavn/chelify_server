@@ -104,28 +104,20 @@ class ReportController extends Controller
         $startDate = null;
         $endDate = null;
         if (!empty($parameters['start_date']) && !empty($parameters['end_date']))
-            try {
-                $startDate = Carbon::createFromFormat("Y-m-d", $parameters['start_date']);
-                $endDate = Carbon::createFromFormat("Y-m-d", $parameters['end_date']);
-            } catch (Exception $e) {
-                Log::info($e->getMessage());
-                $startDate = null;
-                $endDate = null;
-            }
+        {
+            $report->from_date = $parameters['start_date'];
+            $report->to_date = $parameters['end_date'];
+        }
 
         $groupBy = null;
         if (!empty($parameters['group_by']))
-            $groupBy = $parameters['group_by'];
+            $report->group_by = $parameters['group_by'];
 
         $report->account()
             ->associate($account);
 
         $report->transactionCategoryType()
             ->associate($transactionCategoryType);
-
-        $report->from_date = $startDate->toDateTimeString();
-        $report->to_date = $endDate->toDateTimeString();
-        $report->group_by = $groupBy;
 
         $response['result'] = $this->runReport($report);
         return response()
