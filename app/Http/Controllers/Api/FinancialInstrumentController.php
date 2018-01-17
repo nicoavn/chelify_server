@@ -32,12 +32,12 @@ class FinancialInstrumentController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $identifier = $data['identifier'];
-        $alias = $data['alias'];
-        $balance = $data['balance'];
-        $accountId = $data['account_id'];
-        $financialEntityId = $data['financial_entity_id'];
-        $financialInstrumentTypeId = $data['financial_instrument_type_id'];
+        $identifier = $request->get('identifier', null);
+        $alias = $request->get('alias', null);
+        $balance = $request->get('balance', null);
+        $accountId = $request->get('account_id', null);
+        $financialEntityId = $request->get('financial_entity_id', null);
+        $financialInstrumentTypeId = $request->get('financial_instrument_type_id', null);
 
         // Card Data
 
