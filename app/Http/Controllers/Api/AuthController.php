@@ -54,7 +54,7 @@ class AuthController extends Controller
 
             // Default Financial Instrument Cash
             $financialInstrument = new FinancialInstrument;
-            $financialInstrument->identifier = "DOP";
+            $financialInstrument->identifier = "Efectivo";
             $financialInstrument->alias = "";
             $financialInstrument->balance = 0.0;
             $financialInstrument->type()
