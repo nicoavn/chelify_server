@@ -222,7 +222,11 @@ class ReportController extends Controller
             }
         }
 
-        return $result->get();
+        DB::enableQueryLog();
+        $result->get();
+        //return $result->get();
+        dd(DB::getQueryLog());
+        return  null;
     }
 
     /**
