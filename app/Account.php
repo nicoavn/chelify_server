@@ -40,7 +40,7 @@ class Account extends Model
 
     public function recurrentTransactions()
     {
-        return $this->hasManyThrough('App\RecurrentTransaction', 'App\FinancialInstrument', 'a', 'b');
+        return $this->hasManyThrough('App\RecurrentTransaction', 'App\FinancialInstrument', 'account_id', 'charge_to');
     }
 
     public function financialInstruments()
