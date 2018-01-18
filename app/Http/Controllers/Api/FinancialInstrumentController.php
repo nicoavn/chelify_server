@@ -124,7 +124,18 @@ class FinancialInstrumentController extends Controller
         ];
         try {
             $account = Account::findOrFail($accountId);
-            $response['financial_instruments'] = $account->financialInstruments;
+            $financialInstruments = $account->financialInstruments;
+            
+            foreach ($financialInstruments as $key => $fi){
+                $cards = Card::where('financial_instrument_id', $fi->id)
+                    ->get();
+                if ($cards != null){
+                    $fi->cards = $cards;
+                    $financialInstruments[$key] = $fi;
+                }
+            }
+            
+            $response['financial_instruments'] = $financialInstruments;
         } catch (ModelNotFoundException $e) {
             $response['ok'] = 0;
             $response['error'] = $e->getMessage();
