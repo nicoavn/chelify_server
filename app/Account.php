@@ -38,6 +38,11 @@ class Account extends Model
         return $this->hasManyThrough('App\Card', 'App\FinancialInstrument');
     }
 
+    public function recurrentTransactions()
+    {
+        return $this->hasManyThrough('App\RecurrentTransaction', 'App\FinancialInstrument');
+    }
+
     public function financialInstruments()
     {
         return $this->hasMany('App\FinancialInstrument');
